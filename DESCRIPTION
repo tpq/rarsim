@@ -1,11 +1,26 @@
 Package: rarsim
-Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: Response-Adaptive Randomization Simulation Station
+Version: 0.0.1
+URL: http://github.com/tpq/rarsim
+BugReports: http://github.com/tpq/rarsim/issues
+Authors@R: c(
+    person("Thomas", "Quinn", email = "contacttomquinn@gmail.com", role = c("aut", "cre")),
+    person("Stephan", "Jacobs", email = "stephan.jacobs@deakin.edu.au", role = "ctb")
+    )
+Description: Response-adaptive randomization (RAR) is a novel approach to experimental design
+ that has the potential to reduce the cost of expensive clinical trials. However, it may be
+ susceptible to inflated Type 1 or Type 2 errors. Simulations can help ensure that the
+ trial design will not introduce spurious results. The rarsim package is designed
+ to make it easier to run simulations for RAR experiments.
+License: GPL-2
+LazyData: TRUE
+VignetteBuilder: knitr
+RoxygenNote: 7.0.2
 Encoding: UTF-8
-LazyData: true
+Imports:
+    methods,
+    stats
+Suggests:
+    ggplot2,
+    knitr,
+    patchwork
