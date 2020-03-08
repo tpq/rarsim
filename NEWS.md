@@ -1,3 +1,10 @@
+## rarsim 0.0.2
+---------------------
+* Improvements
+    * Add first edition of README for collaborators
+* Bug fixes
+    * Fix error caused by trying to name `simulator` rewards
+
 ## rarsim 0.0.1
 ---------------------
 * Create S4 `scheduler` class for scheduling trials

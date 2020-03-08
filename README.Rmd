@@ -1,13 +1,29 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-Quick start
-===========
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# Quick start
 
 Welcome to the `rarsim` GitHub page! Let's get started.
 
-``` r
+```{r, eval = FALSE}
 library(devtools)
 devtools::install_github("tpq/rarsim")
+library(rarsim)
+```
+
+```{r, echo = FALSE}
 library(rarsim)
 ```
 
@@ -15,12 +31,11 @@ Response-adaptive randomization (RAR) is a novel approach to experimental design
 
 To use this package, you must consider two things. First, how do you want to simulate your data? Second, how do you want to schedule your trial?
 
-Simulate the data
------------------
+## Simulate the data
 
-By convention, this package uses a list of length *K* to represent the *K* arms of the experiment. Each element in the list is a vector of the *N*<sub>*k*</sub> rewards associated with that group. This structure is used for both the `simulator` and the `scheduler` objects. Below, we make a data pool that has 4 groups with 1000 patients in each group.
+By convention, this package uses a list of length $K$ to represent the $K$ arms of the experiment. Each element in the list is a vector of the $N_k$ rewards associated with that group. This structure is used for both the `simulator` and the `scheduler` objects. Below, we make a data pool that has 4 groups with 1000 patients in each group.
 
-``` r
+```{r}
 set.seed(3220)
 pool <- list(
   rpois(1000, 10),
@@ -32,24 +47,21 @@ pool <- list(
 
 It is easy to create a `simulator` object from any data pool.
 
-``` r
+```{r}
 simulator <- simulator.start(pool = pool)
-#> Alert: Use simulator.draw() to draw patients.
 ```
 
 Alternatively, we make a `simulator` object in one step.
 
-``` r
+```{r}
 simulator <- simulator.start.from.unif(mins = c(1, 1, 1, 1), maxes = c(7, 7, 6, 6))
-#> Alert: Use simulator.draw() to draw patients.
 ```
 
-Schedule a trial
-----------------
+## Schedule a trial
 
 There are a few trial parameters that you must set. This includes the number of patients in each group at the start of the trial during the "burn-in" phase, the number of patients to allocate at each subsequent step in the trial, the total number of steps, the prior means and prior variances, and the sampling method used for response-adaptive allocation.
 
-``` r
+```{r}
 N.burn.in = 20
 N.allocate = 15
 N.trials = 10
@@ -61,13 +73,13 @@ sampler = "thompson"
 
 Now we can make the `scheduler object`.
 
-``` r
+```{r}
 scheduler <- scheduler.start(prior.means, prior.vars, N.burn.in = N.burn.in, sampler = sampler)
 ```
 
 A trial is run for `N.trials` steps. In each step, the `scheduler` requests the patient allocations to the `simulator`, and the `simulator` returns the observed rewards for the simulated patients. In pratice, the "rewards"" are generated from an experiment.
 
-``` r
+```{r}
 for(trial in 1:N.trials){
   
   request <- getAllocation(scheduler)
@@ -77,29 +89,24 @@ for(trial in 1:N.trials){
 }
 ```
 
-Visualization
--------------
+## Visualization
 
 We can see how the posterior mean and allocation ratio changes at each step.
 
-``` r
+```{r}
 plotAllocation(scheduler)
 ```
 
-<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
-
-Known issues
-------------
+## Known issues
 
 Some known issues include:
 
--   Expect an error if a `simulator` group pool becomes empty
+* Expect an error if a `simulator` group pool becomes empty
 
-Future work
------------
+## Future work
 
 Future work will include:
 
--   Wrappers to simplify `scheduler`-`simulator` cross-talk
--   Some methods for computing exact p-values from a `scheduler` oject
--   Wrappers to estimate Type I and Type II error
+* Wrappers to simplify `scheduler`-`simulator` cross-talk
+* Some methods for computing exact p-values from a `scheduler` oject
+* Wrappers to estimate Type I and Type II error

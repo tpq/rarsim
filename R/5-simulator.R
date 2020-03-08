@@ -129,7 +129,6 @@ simulator.draw <- function(simulator, allocation){
 
   # Sample data pool for new rewards
   rewards <- vector("numeric", length(allocation))
-  names(rewards) <- levels(allocation)
   i <- 1
   for(group in as.numeric(allocation)){
 
@@ -139,7 +138,6 @@ simulator.draw <- function(simulator, allocation){
     # Add the patient reward, then remove the patient from pool
     rewards[i] <- simulator@pool[[group]][index.i]
     simulator@pool[[group]] <- simulator@pool[[group]][-index.i]
-
     i <- i + 1
   }
 
