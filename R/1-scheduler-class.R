@@ -6,10 +6,12 @@
 #' @slot step An integer. The number of time steps so far. Each time step is a
 #'  kind of 'mini-trial'. This initializes at 0.
 #' @slot rewards A list of all rewards observed to date.
+#' @slot meta A list of tables for all rewards and meta-data available.
+#'  This is optional, but may be preferred for complex simulations.
 #' @slot online.count,online.sum,online.mean,online.var,online.prec
 #'  The empiric statistics observed to date.
 #' @slot post.mean,post.var,post.prec The posterior statistics for each arm.
-#' @slot sampler A string. The name of the sampling method used to allocate patients.
+#' @slot sampler A function. The sampling method used to allocate patients.
 #' @slot allocation A vector of groups to which to allocate new patients.
 #' @slot ingest A list describing the structure of the data expected
 #'  by the next \code{scheduler.update} call. This slot is only
@@ -27,7 +29,7 @@
 #' @param prior.var A vector of prior variances. One variance for each arm.
 #' @param N.burn.in An integer. The number patients to allocate each arm
 #'  during the initial 'burn-in' phase. Ideally, around 20-30 per arm.
-#' @param sampler A string. The name of the sampling method used to allocate patients.
+#' @param sampler A function. The sampling method used to allocate patients.
 #' @param data.ingest A list of rewards. Must match the structure of \code{scheduler@@ingest}.
 #' @param N.allocate An integer. The total number of patients to allocate next.
 #'
@@ -46,6 +48,7 @@ setClass("scheduler",
              K.arms = "numeric",
              step = "numeric",
              rewards = "list",
+             meta = "list",
              online.count = "numeric",
              online.sum = "numeric",
              online.mean = "numeric",
@@ -54,7 +57,7 @@ setClass("scheduler",
              post.mean = "numeric",
              post.var = "numeric",
              post.prec = "numeric",
-             sampler = "character",
+             sampler = "function",
              allocation = "numeric",
              ingest = "list",
              history.post = "data.frame",
@@ -77,7 +80,7 @@ setMethod("show", "scheduler",
             print(paste0("Current step: ", object@step))
             print(paste0("Posterior means: ", paste(object@post.mean, collapse = ", ")))
             print(paste0("Posterior variances: ", paste(object@post.var, collapse = ", ")))
-            print(paste0("Sampler: ", object@sampler))
+            #print(paste0("Sampler: ", object@sampler))
             cat("Next Allocation:")
             print(table(object@allocation))
 
@@ -87,7 +90,6 @@ setMethod("show", "scheduler",
             print("getHistory() -- get history of all posterior statistics")
           }
 )
-
 
 #' @rdname scheduler
 #' @section Getters:
