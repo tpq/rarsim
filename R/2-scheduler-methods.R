@@ -3,7 +3,7 @@
 #' \code{scheduler.start:} Method to initiate a \code{scheduler} object.
 #'  This function returns an updated \code{scheduler} object.
 #' @export
-scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = "thompson"){
+scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = thompson){
 
   if(length(prior.mean) != length(prior.var)){
     stop("Provide an equal-length vector of prior means and prior variances.")
@@ -21,6 +21,7 @@ scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = "thompso
   sch@K.arms <- length(prior.mean)
   sch@step <- 0
   sch@rewards <- lapply(1:length(prior.mean), function(x) NULL) # rewards are NULL to start
+  sch@meta <- list() # for future use...
   sch@sampler <- sampler # the sampler is saved on initialization
   allocation <- rep(1:sch@K.arms, N.burn.in) # burn-in will have an equal allocation ratio
   sch@allocation <- sample(factor(allocation, 1:sch@K.arms)) # make sure first allocation is random
@@ -68,6 +69,7 @@ scheduler.update <- function(scheduler, data.ingest, N.allocate){
   sch@post.mean <- sapply(
     1:sch@K.arms,
     function(arm){
+      # (prec0 * mu0 + prec*sum(x)) / (prec0 + n*prec)
       (sch@prior.prec[arm]*sch@prior.mean[arm] + sch@online.prec[arm]*sch@online.sum[arm])/
         (sch@prior.prec[arm] + sch@online.count[arm]*sch@online.prec[arm])
     })
