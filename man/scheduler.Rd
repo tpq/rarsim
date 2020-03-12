@@ -23,7 +23,7 @@ getAllocation(object)
 
 getHistory(object)
 
-scheduler.start(prior.mean, prior.var, N.burn.in, sampler = "thompson")
+scheduler.start(prior.mean, prior.var, N.burn.in, sampler = thompson)
 
 scheduler.update(scheduler, data.ingest, N.allocate)
 
@@ -47,7 +47,7 @@ thompson(scheduler)
 \item{N.burn.in}{An integer. The number patients to allocate each arm
 during the initial 'burn-in' phase. Ideally, around 20-30 per arm.}
 
-\item{sampler}{A string. The name of the sampling method used to allocate patients.}
+\item{sampler}{A function. The sampling method used to allocate patients.}
 
 \item{data.ingest}{A list of rewards. Must match the structure of \code{scheduler@ingest}.}
 
@@ -70,11 +70,14 @@ kind of 'mini-trial'. This initializes at 0.}
 
 \item{\code{rewards}}{A list of all rewards observed to date.}
 
+\item{\code{meta}}{A list of tables for all rewards and meta-data available.
+This is optional, but may be preferred for complex simulations.}
+
 \item{\code{online.count,online.sum,online.mean,online.var,online.prec}}{The empiric statistics observed to date.}
 
 \item{\code{post.mean,post.var,post.prec}}{The posterior statistics for each arm.}
 
-\item{\code{sampler}}{A string. The name of the sampling method used to allocate patients.}
+\item{\code{sampler}}{A function. The sampling method used to allocate patients.}
 
 \item{\code{allocation}}{A vector of groups to which to allocate new patients.}
 

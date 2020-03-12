@@ -1,6 +1,6 @@
 Package: rarsim
 Title: Response-Adaptive Randomization Simulation Station
-Version: 0.0.2
+Version: 0.0.3
 URL: http://github.com/tpq/rarsim
 BugReports: http://github.com/tpq/rarsim/issues
 Authors@R: c(
@@ -23,4 +23,5 @@ Imports:
 Suggests:
     ggplot2,
     knitr,
-    patchwork
+    patchwork,
+    testthat (>= 2.1.0)

@@ -68,7 +68,7 @@ N.trials = 10
 K.arm = 4
 prior.means = rep(4, K.arm)
 prior.vars = rep(1, K.arm)
-sampler = "thompson"
+sampler = thompson
 ```
 
 Now we can make the `scheduler object`.
@@ -102,11 +102,12 @@ plotAllocation(scheduler)
 Some known issues include:
 
 * Expect an error if a `simulator` group pool becomes empty
+* Currently no way to incorporate meta-data
 
 ## Future work
 
 Future work will include:
 
 * Wrappers to simplify `scheduler`-`simulator` cross-talk
-* Some methods for computing exact p-values from a `scheduler` oject
+* Some methods for computing exact p-values from a `scheduler` object
 * Wrappers to estimate Type I and Type II error

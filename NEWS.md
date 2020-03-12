@@ -1,3 +1,10 @@
+## rarsim 0.0.3
+---------------------
+* Get ready for statistics modules
+    * Add empty `@meta` slot for future updates
+    * New `getDivergences` function can calculate divergence between two posteriors
+    * New `getPermutations` function can permute rewards in `scheduler` object
+
 ## rarsim 0.0.2
 ---------------------
 * Improvements
