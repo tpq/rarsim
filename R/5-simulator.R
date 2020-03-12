@@ -76,7 +76,7 @@ simulator.start <- function(pool){
 
   simulator <- new("simulator")
   simulator@pool <- pool
-  simulator@meta <- vector("list", length(pool))
+  simulator@meta <- list() # for future use...
   simulator@draw <- vector("list", length(pool))
   message("Alert: Use simulator.draw() to draw patients.")
   return(simulator)
