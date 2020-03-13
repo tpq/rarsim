@@ -1,6 +1,6 @@
 #' @importFrom grDevices terrain.colors
 #' @importFrom methods new show
-#' @importFrom stats dnorm rnorm runif step var
+#' @import stats
 NULL
 
 #' Package Check
