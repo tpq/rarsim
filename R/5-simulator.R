@@ -73,7 +73,6 @@ getDraw <- function(simulator){
 #' @export
 simulator.start <- function(pool){
 
-
   simulator <- new("simulator")
   simulator@pool <- pool
   simulator@meta <- list() # for future use...
@@ -143,6 +142,7 @@ simulator.draw <- function(simulator, allocation){
 
   # Structure rewards as a data ingest list
   simulator@draw <- split(rewards, allocation)
+  names(simulator@draw) <- names(simulator@pool)
 
   return(simulator)
 }
