@@ -47,6 +47,15 @@ scheduler.update <- function(scheduler, data.ingest, N.allocate){
     stop("Incoming data does not match expectations.")
   }
 
+  # Name the list of rewards
+  if(is.null(names(sch@rewards))){
+    names(sch@rewards) <- names(data.ingest)
+  }else{
+    if(!identical(names(sch@rewards), names(data.ingest))){
+      warning("Reward names do not match. Are you sure about your data?")
+    }
+  }
+
   # Update @rewards with the incoming data
   for(arm in 1:sch@K.arms){
     sch@rewards[[arm]] <- c(sch@rewards[[arm]], data.ingest[[arm]])
