@@ -4,7 +4,7 @@
 \alias{getPermutations}
 \title{Permute Rewards for a Scheduler Object}
 \usage{
-getPermutations(scheduler, how = permute.all, reference = NULL)
+getPermutations(scheduler, how = permute.from.all, reference = NULL)
 }
 \arguments{
 \item{scheduler}{A \code{scheduler} object.}

@@ -1,3 +1,11 @@
+## rarsim 0.0.4
+---------------------
+* Improvements
+    * Consistently name reward lists
+    * New `stats.anova` computes a p-value from the rewards
+    * New `stats.ttest` computes p-values from the rewards
+    * New `stats.empiric` computes empiric p-values
+
 ## rarsim 0.0.3
 ---------------------
 * Get ready for statistics modules
