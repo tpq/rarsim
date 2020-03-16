@@ -1,10 +1,10 @@
 #' @rdname scheduler
 #' @section Samplers:
-#' \code{thompson:} Method to allocate patients by Thompson sampling.
+#' \code{sampler.thompson:} Method to allocate patients by Thompson sampling.
 #'  This function returns an integer corresponding to the group
 #'  to which the patient is randomly allocated.
 #' @export
-thompson <- function(scheduler){
+sampler.thompson <- function(scheduler){
 
   sch <- scheduler
 
