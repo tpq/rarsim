@@ -23,7 +23,7 @@ test_that("permute methods work correctly", {
 })
 
 simulator <- simulator.start(pool = list(rpois(1000, 10), rpois(1000, 20), rpois(1000, 10), rpois(1000, 5)))
-scheduler <- scheduler.start(rep(4, 4), rep(Inf, 4), N.burn.in = 20, sampler = thompson)
+scheduler <- scheduler.start(rep(4, 4), rep(Inf, 4), N.burn.in = 20)
 for(trial in 1:5){
   simulator <- simulator.draw(simulator, getAllocation(scheduler))
   scheduler <- scheduler.update(scheduler, getDraw(simulator), N.allocate = 20)

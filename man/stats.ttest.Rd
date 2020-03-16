@@ -4,12 +4,14 @@
 \alias{stats.ttest}
 \title{Perform a Statistical Analysis}
 \usage{
-stats.ttest(scheduler, reference = NULL)
+stats.ttest(scheduler, reference = NULL, ...)
 }
 \arguments{
 \item{scheduler}{A \code{scheduler} object.}
 
 \item{reference}{An integer. The list element with control rewards.}
+
+\item{...}{Null argument.}
 }
 \value{
 A vector of adjusted p-values.

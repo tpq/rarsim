@@ -9,7 +9,8 @@ stats.empiric(
   reference = NULL,
   how.diverge = diverge.kl.sym,
   how.permute = permute.from.all,
-  p = 1000
+  p = 1000,
+  ...
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ stats.empiric(
 \item{how.permute}{A \code{permute} method.}
 
 \item{p}{An integer. The number of permutations.}
+
+\item{...}{Null argument.}
 }
 \value{
 A vector of adjusted p-values.

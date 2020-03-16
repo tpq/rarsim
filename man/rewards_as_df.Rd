@@ -4,10 +4,12 @@
 \alias{rewards_as_df}
 \title{Represent Reward List as Data Frame}
 \usage{
-rewards_as_df(scheduler)
+rewards_as_df(scheduler, ...)
 }
 \arguments{
 \item{scheduler}{A \code{scheduler} object.}
+
+\item{...}{Null argument.}
 }
 \value{
 A \code{data.frame}

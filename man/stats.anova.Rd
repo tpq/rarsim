@@ -4,10 +4,12 @@
 \alias{stats.anova}
 \title{Perform a Statistical Analysis}
 \usage{
-stats.anova(scheduler)
+stats.anova(scheduler, ...)
 }
 \arguments{
 \item{scheduler}{A \code{scheduler} object.}
+
+\item{...}{Null argument.}
 }
 \value{
 A single p-value.

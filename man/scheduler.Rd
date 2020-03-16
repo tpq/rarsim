@@ -14,7 +14,7 @@
 \alias{plotPosterior}
 \alias{plotHistory}
 \alias{plotAllocation}
-\alias{thompson}
+\alias{sampler.thompson}
 \title{S4 Scheduler Class Object}
 \usage{
 \S4method{show}{scheduler}(object)
@@ -23,7 +23,7 @@ getAllocation(object)
 
 getHistory(object)
 
-scheduler.start(prior.mean, prior.var, N.burn.in, sampler = thompson)
+scheduler.start(prior.mean, prior.var, N.burn.in, sampler = sampler.thompson)
 
 scheduler.update(scheduler, data.ingest, N.allocate)
 
@@ -35,7 +35,7 @@ plotHistory(scheduler)
 
 plotAllocation(scheduler)
 
-thompson(scheduler)
+sampler.thompson(scheduler)
 }
 \arguments{
 \item{object, scheduler}{A \code{scheduler} object.}
@@ -76,6 +76,8 @@ This is optional, but may be preferred for complex simulations.}
 \item{\code{online.count,online.sum,online.mean,online.var,online.prec}}{The empiric statistics observed to date.}
 
 \item{\code{post.mean,post.var,post.prec}}{The posterior statistics for each arm.}
+
+\item{\code{sampler.id}}{A string. The sampling method used to allocate patients.}
 
 \item{\code{sampler}}{A function. The sampling method used to allocate patients.}
 
@@ -138,7 +140,7 @@ the rewards here are organized by time step.}
 
 \section{Samplers}{
 
-\code{thompson:} Method to allocate patients by Thompson sampling.
+\code{sampler.thompson:} Method to allocate patients by Thompson sampling.
  This function returns an integer corresponding to the group
  to which the patient is randomly allocated.
 }
