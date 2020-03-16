@@ -11,6 +11,7 @@
 #' @slot online.count,online.sum,online.mean,online.var,online.prec
 #'  The empiric statistics observed to date.
 #' @slot post.mean,post.var,post.prec The posterior statistics for each arm.
+#' @slot sampler.id A string. The sampling method used to allocate patients.
 #' @slot sampler A function. The sampling method used to allocate patients.
 #' @slot allocation A vector of groups to which to allocate new patients.
 #' @slot ingest A list describing the structure of the data expected
@@ -57,6 +58,7 @@ setClass("scheduler",
              post.mean = "numeric",
              post.var = "numeric",
              post.prec = "numeric",
+             sampler.id = "character",
              sampler = "function",
              allocation = "numeric",
              ingest = "list",
