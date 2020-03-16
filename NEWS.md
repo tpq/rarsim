@@ -1,3 +1,11 @@
+## rarsim 0.0.5
+---------------------
+* Improvements
+    * Have `scheduler` object save name of sampler method
+    * New `run.trial` iterates `simulator.draw` and `scheduler.update` steps
+    * New `run.benchmark` estimates proportion of (p < alpha)
+    * Name all sampler methods with `sampler.` prefix
+
 ## rarsim 0.0.4
 ---------------------
 * Improvements
