@@ -1,9 +1,10 @@
 #' Represent Reward List as Data Frame
 #'
 #' @param scheduler A \code{scheduler} object.
+#' @param ... Null argument.
 #' @return A \code{data.frame}
 #' @export
-rewards_as_df <- function(scheduler){
+rewards_as_df <- function(scheduler, ...){
 
   rewards <- scheduler@rewards
   df <- lapply(1:length(rewards), function(i) data.frame("group" = i, "reward" = rewards[[i]]))
@@ -14,9 +15,10 @@ rewards_as_df <- function(scheduler){
 #' Perform a Statistical Analysis
 #'
 #' @param scheduler A \code{scheduler} object.
+#' @param ... Null argument.
 #' @return A single p-value.
 #' @export
-stats.anova <- function(scheduler){
+stats.anova <- function(scheduler, ...){
 
   data <- rewards_as_df(scheduler)
   m <- lm(reward ~ factor(group), data)
@@ -28,9 +30,10 @@ stats.anova <- function(scheduler){
 #'
 #' @param scheduler A \code{scheduler} object.
 #' @param reference An integer. The list element with control rewards.
+#' @param ... Null argument.
 #' @return A vector of adjusted p-values.
 #' @export
-stats.ttest <- function(scheduler, reference = NULL){
+stats.ttest <- function(scheduler, reference = NULL, ...){
 
   if(is.null(reference)) stop("Reference is missing.")
 
@@ -54,9 +57,10 @@ stats.ttest <- function(scheduler, reference = NULL){
 #' @param how.diverge A \code{diverge} method.
 #' @param how.permute A \code{permute} method.
 #' @param p An integer. The number of permutations.
+#' @param ... Null argument.
 #' @return A vector of adjusted p-values.
 #' @export
-stats.empiric <- function(scheduler, reference = NULL, how.diverge = diverge.kl.sym, how.permute = permute.from.all, p = 1000){
+stats.empiric <- function(scheduler, reference = NULL, how.diverge = diverge.kl.sym, how.permute = permute.from.all, p = 1000, ...){
 
   if(is.null(reference)) stop("Reference is missing.")
 
