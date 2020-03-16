@@ -56,7 +56,7 @@ N.trials = 10
 K.arm = 4
 prior.means = rep(4, K.arm)
 prior.vars = rep(1, K.arm)
-sampler = thompson
+sampler = sampler.thompson
 ```
 
 Now we can make the `scheduler object`.
@@ -77,6 +77,15 @@ for(trial in 1:N.trials){
 }
 ```
 
+This iterative procedure is wrapped by the `run.trial` function.
+
+``` r
+scheduler <- scheduler.start(prior.means, prior.vars, N.burn.in = N.burn.in, sampler = sampler)
+simulator <- simulator.start.from.unif(mins = c(1, 1, 1, 1), maxes = c(7, 7, 6, 6))
+#> Alert: Use simulator.draw() to draw patients.
+scheduler <- run.trial(scheduler, simulator, N.trials = N.trials, N.allocate = N.allocate)
+```
+
 Visualization
 -------------
 
@@ -86,7 +95,15 @@ We can see how the posterior mean and allocation ratio changes at each step.
 plotAllocation(scheduler)
 ```
 
-<img src="man/figures/README-unnamed-chunk-10-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-11-1.png" width="100%" />
+
+We can also visualize how the posterior changes with more data.
+
+``` r
+plotHistory(scheduler)
+```
+
+<img src="man/figures/README-unnamed-chunk-12-1.png" width="100%" />
 
 Known issues
 ------------
@@ -101,6 +118,5 @@ Future work
 
 Future work will include:
 
--   Wrappers to simplify `scheduler`-`simulator` cross-talk
 -   Some methods for computing exact p-values from a `scheduler` object
 -   Wrappers to estimate Type I and Type II error
