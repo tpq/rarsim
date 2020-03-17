@@ -1,3 +1,15 @@
+## rarsim 0.0.6
+---------------------
+* Add `sampler` methods
+    * New `sampler.fixed` will allocate patients at a fixed ratio
+    * New `sampler.auc` will allocate patients proportional to p(posterior > cutoff)
+* Improvements
+    * Add `prior.alpha` and `prior.beta` slots to anticipate normal-gamma conjugate
+    * (`prior.var` and `prior.prec` save expected values for backwards compatibility)
+    * Add `post.alpha` and `post.beta` slots to anticipate normal-gamma conjugate
+    * (`post.var` and `post.prec` save expected values for backwards compatibility)
+    * Add `heuristic` argument to toggle normal-gamma use
+
 ## rarsim 0.0.5
 ---------------------
 * Improvements
