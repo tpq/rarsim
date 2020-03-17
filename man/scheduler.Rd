@@ -15,6 +15,8 @@
 \alias{plotHistory}
 \alias{plotAllocation}
 \alias{sampler.thompson}
+\alias{sampler.fixed}
+\alias{sampler.auc}
 \title{S4 Scheduler Class Object}
 \usage{
 \S4method{show}{scheduler}(object)
@@ -23,7 +25,13 @@ getAllocation(object)
 
 getHistory(object)
 
-scheduler.start(prior.mean, prior.var, N.burn.in, sampler = sampler.thompson)
+scheduler.start(
+  prior.mean,
+  prior.var,
+  N.burn.in,
+  sampler = sampler.thompson,
+  heuristic = TRUE
+)
 
 scheduler.update(scheduler, data.ingest, N.allocate)
 
@@ -36,6 +44,10 @@ plotHistory(scheduler)
 plotAllocation(scheduler)
 
 sampler.thompson(scheduler)
+
+sampler.fixed(scheduler)
+
+sampler.auc(scheduler)
 }
 \arguments{
 \item{object, scheduler}{A \code{scheduler} object.}
@@ -49,6 +61,10 @@ during the initial 'burn-in' phase. Ideally, around 20-30 per arm.}
 
 \item{sampler}{A function. The sampling method used to allocate patients.}
 
+\item{heuristic}{A logical. Toggles whether to assume precision is known,
+but instead estimate it from the data. When taking this approach,
+the conjugate prior distribution is normal.}
+
 \item{data.ingest}{A list of rewards. Must match the structure of \code{scheduler@ingest}.}
 
 \item{N.allocate}{An integer. The total number of patients to allocate next.}
@@ -59,7 +75,14 @@ S4 Scheduler Class Object
 \section{Slots}{
 
 \describe{
-\item{\code{prior.mean,prior.var,prior.prec}}{The prior statistics for each arm.}
+\item{\code{prior.mean}}{The prior statistics for each arm.}
+
+\item{\code{prior.var,prior.prec}}{The prior statistics for each arm. When the
+conjugate prior distribution is normal-gamma, these slots contain the
+expected values (computed from alpha and beta).}
+
+\item{\code{prior.alpha,prior.beta}}{The prior statistics for each arm. These apply
+when the conjugate prior distribution is normal-gamma.}
 
 \item{\code{N.burn.in}}{An integer. The number of patients in each arm at first time step.}
 
@@ -75,7 +98,18 @@ This is optional, but may be preferred for complex simulations.}
 
 \item{\code{online.count,online.sum,online.mean,online.var,online.prec}}{The empiric statistics observed to date.}
 
-\item{\code{post.mean,post.var,post.prec}}{The posterior statistics for each arm.}
+\item{\code{heuristic}}{A logical. Toggles whether to assume precision is known,
+but instead estimate it from the data. When taking this approach,
+the conjugate prior distribution is normal.}
+
+\item{\code{post.mean}}{The posterior statistics for each arm.}
+
+\item{\code{post.var,post.prec}}{The posterior statistics for each arm. When the
+conjugate prior distribution is normal-gamma, these slots contain the
+expected values (computed from alpha and beta).}
+
+\item{\code{post.alpha,post.beta}}{The posterior statistics for each arm. These apply
+when the conjugate prior distribution is normal-gamma.}
 
 \item{\code{sampler.id}}{A string. The sampling method used to allocate patients.}
 
@@ -141,6 +175,17 @@ the rewards here are organized by time step.}
 \section{Samplers}{
 
 \code{sampler.thompson:} Method to allocate patients by Thompson sampling.
+ This function returns an integer corresponding to the group
+ to which the patient is randomly allocated.
+
+
+\code{sampler.fixed:} Method to allocate patients at a fixed ratio.
+ This function returns an integer corresponding to the group
+ to which the patient is randomly allocated.
+
+
+\code{sampler.auc:} Method to allocate patients proportional to the
+ probability that the posterior expected reward is greater than 0.
  This function returns an integer corresponding to the group
  to which the patient is randomly allocated.
 }
