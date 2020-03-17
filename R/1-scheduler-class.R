@@ -1,6 +1,11 @@
 #' S4 Scheduler Class Object
 #'
-#' @slot prior.mean,prior.var,prior.prec The prior statistics for each arm.
+#' @slot prior.mean The prior statistics for each arm.
+#' @slot prior.var,prior.prec The prior statistics for each arm. When the
+#'  conjugate prior distribution is normal-gamma, these slots contain the
+#'  expected values (computed from alpha and beta).
+#' @slot prior.alpha,prior.beta The prior statistics for each arm. These apply
+#'  when the conjugate prior distribution is normal-gamma.
 #' @slot N.burn.in An integer. The number of patients in each arm at first time step.
 #' @slot K.arms An integer. The number of experimental groups (also called 'arms').
 #' @slot step An integer. The number of time steps so far. Each time step is a
@@ -10,7 +15,15 @@
 #'  This is optional, but may be preferred for complex simulations.
 #' @slot online.count,online.sum,online.mean,online.var,online.prec
 #'  The empiric statistics observed to date.
-#' @slot post.mean,post.var,post.prec The posterior statistics for each arm.
+#' @slot heuristic A logical. Toggles whether to assume precision is known,
+#'  but instead estimate it from the data. When taking this approach,
+#'  the conjugate prior distribution is normal.
+#' @slot post.mean The posterior statistics for each arm.
+#' @slot post.var,post.prec The posterior statistics for each arm. When the
+#'  conjugate prior distribution is normal-gamma, these slots contain the
+#'  expected values (computed from alpha and beta).
+#' @slot post.alpha,post.beta The posterior statistics for each arm. These apply
+#'  when the conjugate prior distribution is normal-gamma.
 #' @slot sampler.id A string. The sampling method used to allocate patients.
 #' @slot sampler A function. The sampling method used to allocate patients.
 #' @slot allocation A vector of groups to which to allocate new patients.
@@ -26,6 +39,9 @@
 #'  the rewards here are organized by time step.
 #'
 #' @param object,scheduler A \code{scheduler} object.
+#' @param heuristic A logical. Toggles whether to assume precision is known,
+#'  but instead estimate it from the data. When taking this approach,
+#'  the conjugate prior distribution is normal.
 #' @param prior.mean A vector of prior means. One mean for each arm
 #' @param prior.var A vector of prior variances. One variance for each arm.
 #' @param N.burn.in An integer. The number patients to allocate each arm
@@ -45,23 +61,33 @@ setClass("scheduler",
              prior.mean = "numeric",
              prior.var = "numeric",
              prior.prec = "numeric",
+             prior.alpha = "numeric",
+             prior.beta = "numeric",
+
              N.burn.in = "numeric",
              K.arms = "numeric",
              step = "numeric",
              rewards = "list",
              meta = "list",
+
              online.count = "numeric",
              online.sum = "numeric",
              online.mean = "numeric",
              online.var = "numeric",
              online.prec = "numeric",
+
+             heuristic = "logical",
              post.mean = "numeric",
              post.var = "numeric",
              post.prec = "numeric",
+             post.alpha = "numeric",
+             post.beta = "numeric",
+
              sampler.id = "character",
              sampler = "function",
              allocation = "numeric",
              ingest = "list",
+
              history.post = "data.frame",
              history = "list"
            )
