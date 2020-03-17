@@ -3,7 +3,7 @@
 #' \code{scheduler.start:} Method to initiate a \code{scheduler} object.
 #'  This function returns an updated \code{scheduler} object.
 #' @export
-scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = sampler.thompson){
+scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = sampler.thompson, heuristic = TRUE){
 
   if(length(prior.mean) != length(prior.var)){
     stop("Provide an equal-length vector of prior means and prior variances.")
@@ -18,9 +18,21 @@ scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = sampler.
   }
 
   sch <- new("scheduler")
-  sch@prior.mean <- prior.mean
-  sch@prior.var <- prior.var
-  sch@prior.prec <- 1/prior.var
+
+  if(heuristic){
+
+    sch@heuristic <- TRUE
+    sch@prior.mean <- prior.mean
+    sch@prior.var <- prior.var
+    sch@prior.prec <- 1/prior.var
+
+  }else{
+
+    # TO UPDATE IN FUTURE VERSION
+    stop("Normal-gamma conjugate prior not yet implemented.")
+    # Note: @prior.var and @prior.prec to become the expected based on alpha, beta
+  }
+
   sch@N.burn.in <- N.burn.in
   sch@K.arms <- length(prior.mean)
   sch@step <- 0
@@ -79,20 +91,29 @@ scheduler.update <- function(scheduler, data.ingest, N.allocate){
   sch@online.var <- sapply(sch@rewards, var)
   sch@online.prec <- sapply(sch@rewards, function(reward) 1/var(reward))
 
-  # Update all posteriors using empiric data
-  sch@post.mean <- sapply(
-    1:sch@K.arms,
-    function(arm){
-      # (prec0 * mu0 + prec*sum(x)) / (prec0 + n*prec)
-      (sch@prior.prec[arm]*sch@prior.mean[arm] + sch@online.prec[arm]*sch@online.sum[arm])/
-        (sch@prior.prec[arm] + sch@online.count[arm]*sch@online.prec[arm])
-    })
-  sch@post.prec <- sapply(
-    1:sch@K.arms,
-    function(arm){
-      sch@prior.prec[arm] + sch@online.count[arm]*sch@online.prec[arm]
-    })
-  sch@post.var <- sapply(sch@post.prec, function(prec) 1/prec)
+  if(sch@heuristic){
+
+    # Update all posteriors using empiric data
+    sch@post.mean <- sapply(
+      1:sch@K.arms,
+      function(arm){
+        # (prec0 * mu0 + prec*sum(x)) / (prec0 + n*prec)
+        (sch@prior.prec[arm]*sch@prior.mean[arm] + sch@online.prec[arm]*sch@online.sum[arm])/
+          (sch@prior.prec[arm] + sch@online.count[arm]*sch@online.prec[arm])
+      })
+    sch@post.prec <- sapply(
+      1:sch@K.arms,
+      function(arm){
+        sch@prior.prec[arm] + sch@online.count[arm]*sch@online.prec[arm]
+      })
+    sch@post.var <- sapply(sch@post.prec, function(prec) 1/prec)
+
+  }else{
+
+    # TO UPDATE IN FUTURE VERSION
+    stop("Normal-gamma conjugate prior not yet implemented.")
+    # Note: @post.var and @post.prec to become the expected based on alpha, beta
+  }
 
   # Call the sampler (e.g., sampler.thompson) one patient at a time...
   allocation <- sapply(1:N.allocate, function(patient){
