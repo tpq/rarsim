@@ -43,3 +43,101 @@ progress <- function(i, k, numTicks){
 
   return(numTicks)
 }
+
+#' Alternative Functions
+#'
+#' Used for unit tests.
+#'
+#' @param n,mean,sd See \code{norm}.
+#' @return See \code{norm}.
+#' @export
+alt_rnorm <- function(n, mean = 0, sd = 1){
+
+  sd*rnorm(n, mean = 0, sd = 1) + mean
+}
+
+#' Alternative Functions
+#'
+#' @param q,mean,sd See \code{norm}.
+#' @return See \code{norm}.
+#' @export
+alt_pnorm <- function(q, mean = 0, sd = 1){
+
+  pnorm((q - mean)/sd, mean = 0, sd = 1)
+}
+
+#' Alternative Functions
+#'
+#' Used for unit tests.
+#'
+#' @param p,mean,sd See \code{norm}.
+#' @return See \code{norm}.
+#' @export
+alt_qnorm <- function(p, mean = 0, sd = 1){
+
+  sd*qnorm(p, mean = 0, sd = 1) + mean
+}
+
+#' Alternative Functions
+#'
+#' Used for unit tests.
+#'
+#' @param x,mean,sd See \code{norm}.
+#' @return See \code{norm}.
+#' @export
+alt_dnorm <- function(x, mean = 0, sd = 1){
+
+  dnorm(qnorm(pnorm(x, mean = mean, sd = sd)))
+}
+
+#' Alternative Functions
+#'
+#' Accesses a t-distribution based on the degrees-of-freedom,
+#'  mean, and standard deviation.
+#'
+#' @param n,df,mean,sd See \code{t}.
+#' @return See \code{t}.
+#' @export
+alt_rt <- function(n, df, mean = 0, sd = 1){
+
+  sd*rt(n, df) + mean
+}
+
+#' Alternative Functions
+#'
+#' Accesses a t-distribution based on the degrees-of-freedom,
+#'  mean, and standard deviation.
+#'
+#' @param q,df,mean,sd See \code{t}.
+#' @return See \code{t}.
+#' @export
+alt_pt <- function(q, df, mean = 0, sd = 1){
+
+  pt((q - mean)/sd, df = df)
+}
+
+#' Alternative Functions
+#'
+#' Accesses a t-distribution based on the degrees-of-freedom,
+#'  mean, and standard deviation.
+#'
+#' @param p,df,mean,sd See \code{t}.
+#' @return See \code{t}.
+#' @export
+alt_qt <- function(p, df, mean = 0, sd = 1){
+
+  sd*qt(p, df) + mean
+}
+
+#' Alternative Functions
+#'
+#' Accesses a t-distribution based on the degrees-of-freedom,
+#'  mean, and standard deviation.
+#'
+#' @param x,df,mean,sd See \code{t}.
+#' @return See \code{t}.
+#' @export
+alt_dt <- function(x, df, mean = 0, sd = 1){
+
+  dt(qt(alt_pt(x, df = df, mean = mean, sd = sd), df = df), df = df)
+}
