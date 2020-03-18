@@ -1,9 +1,11 @@
 #' S4 Scheduler Class Object
 #'
+#' @slot prior.df The degrees-of-freedom for the t-distribution that describes the
+#'  uncertainty about the mean. Set to Inf when \code{heuristic = TRUE}.
 #' @slot prior.mean The prior statistics for each arm.
-#' @slot prior.var,prior.prec The prior statistics for each arm. When the
-#'  conjugate prior distribution is normal-gamma, these slots contain the
-#'  expected values (computed from alpha and beta).
+#' @slot prior.var The uncertainty about the mean. When the
+#'  conjugate prior distribution is normal-gamma, this slot contains the
+#'  variance of the marginal distribution of the mean.
 #' @slot prior.alpha,prior.beta The prior statistics for each arm. These apply
 #'  when the conjugate prior distribution is normal-gamma.
 #' @slot N.burn.in An integer. The number of patients in each arm at first time step.
@@ -18,10 +20,12 @@
 #' @slot heuristic A logical. Toggles whether to assume precision is known,
 #'  but instead estimate it from the data. When taking this approach,
 #'  the conjugate prior distribution is normal.
+#' @slot post.df The degrees-of-freedom for the t-distribution that describes the
+#'  uncertainty about the mean. Set to Inf when \code{heuristic = TRUE}.
 #' @slot post.mean The posterior statistics for each arm.
-#' @slot post.var,post.prec The posterior statistics for each arm. When the
-#'  conjugate prior distribution is normal-gamma, these slots contain the
-#'  expected values (computed from alpha and beta).
+#' @slot post.var The uncertainty about the mean. When the
+#'  conjugate prior distribution is normal-gamma, this slot contains the
+#'  variance of the marginal distribution of the mean.
 #' @slot post.alpha,post.beta The posterior statistics for each arm. These apply
 #'  when the conjugate prior distribution is normal-gamma.
 #' @slot sampler.id A string. The sampling method used to allocate patients.
@@ -58,9 +62,9 @@ NULL
 setClass("scheduler",
          slots =
            c(
+             prior.df = "numeric",
              prior.mean = "numeric",
              prior.var = "numeric",
-             prior.prec = "numeric",
              prior.alpha = "numeric",
              prior.beta = "numeric",
 
@@ -77,9 +81,9 @@ setClass("scheduler",
              online.prec = "numeric",
 
              heuristic = "logical",
+             post.df = "numeric",
              post.mean = "numeric",
              post.var = "numeric",
-             post.prec = "numeric",
              post.alpha = "numeric",
              post.beta = "numeric",
 
