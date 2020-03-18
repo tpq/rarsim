@@ -17,8 +17,9 @@ plotPrior <- function(scheduler){
     plot_arm <- ggplot2::ggplot(data = data.frame(x = c(xmin, xmax)), ggplot2::aes_string("x")) +
       ggplot2::scale_y_continuous(breaks = NULL) + ggplot2::coord_flip() + ggplot2::theme_bw() +
       ggplot2::ylab("") + ggplot2::xlab(paste0("Experimental Arm ", arm)) +
-      ggplot2::stat_function(fun = dnorm, n = 1001,
-                             args = list(mean = scheduler@prior.mean[arm],
+      ggplot2::stat_function(fun = alt_dt, n = 1001,
+                             args = list(df = scheduler@prior.df[arm],
+                                         mean = scheduler@prior.mean[arm],
                                          sd = sqrt(scheduler@prior.var[arm])))
 
     return(plot_arm)
@@ -46,8 +47,9 @@ plotPosterior <- function(scheduler){
     plot_arm <- ggplot2::ggplot(data = data.frame(x = c(xmin, xmax)), ggplot2::aes_string("x")) +
       ggplot2::scale_y_continuous(breaks = NULL) + ggplot2::coord_flip() + ggplot2::theme_bw() +
       ggplot2::ylab("") + ggplot2::xlab(paste0("Experimental Arm ", arm)) +
-      ggplot2::stat_function(fun = dnorm, n = 1001,
-                             args = list(mean = scheduler@post.mean[arm],
+      ggplot2::stat_function(fun = alt_dt, n = 1001,
+                             args = list(df = scheduler@post.df[arm],
+                                         mean = scheduler@post.mean[arm],
                                          sd = sqrt(scheduler@post.var[arm])))
 
     return(plot_arm)
@@ -83,8 +85,9 @@ plotHistory <- function(scheduler){
 
       t.post <- sch@history.post[sch@history.post$step == t,]
       plot_arm <- plot_arm +
-        ggplot2::stat_function(fun = dnorm, n = 1001,
-                               args = list(mean = t.post$mean[arm],
+        ggplot2::stat_function(fun = alt_dt, n = 1001,
+                               args = list(df = t.post$df[arm],
+                                           mean = t.post$mean[arm],
                                            sd = sqrt(t.post$var[arm])),
                                colour = cols[t+1])
     }
