@@ -75,11 +75,14 @@ S4 Scheduler Class Object
 \section{Slots}{
 
 \describe{
+\item{\code{prior.df}}{The degrees-of-freedom for the t-distribution that describes the
+uncertainty about the mean. Set to Inf when \code{heuristic = TRUE}.}
+
 \item{\code{prior.mean}}{The prior statistics for each arm.}
 
-\item{\code{prior.var,prior.prec}}{The prior statistics for each arm. When the
-conjugate prior distribution is normal-gamma, these slots contain the
-expected values (computed from alpha and beta).}
+\item{\code{prior.var}}{The uncertainty about the mean. When the
+conjugate prior distribution is normal-gamma, this slot contains the
+variance of the marginal distribution of the mean.}
 
 \item{\code{prior.alpha,prior.beta}}{The prior statistics for each arm. These apply
 when the conjugate prior distribution is normal-gamma.}
@@ -102,11 +105,14 @@ This is optional, but may be preferred for complex simulations.}
 but instead estimate it from the data. When taking this approach,
 the conjugate prior distribution is normal.}
 
+\item{\code{post.df}}{The degrees-of-freedom for the t-distribution that describes the
+uncertainty about the mean. Set to Inf when \code{heuristic = TRUE}.}
+
 \item{\code{post.mean}}{The posterior statistics for each arm.}
 
-\item{\code{post.var,post.prec}}{The posterior statistics for each arm. When the
-conjugate prior distribution is normal-gamma, these slots contain the
-expected values (computed from alpha and beta).}
+\item{\code{post.var}}{The uncertainty about the mean. When the
+conjugate prior distribution is normal-gamma, this slot contains the
+variance of the marginal distribution of the mean.}
 
 \item{\code{post.alpha,post.beta}}{The posterior statistics for each arm. These apply
 when the conjugate prior distribution is normal-gamma.}

@@ -1,13 +1,22 @@
+## rarsim 0.0.7
+---------------------
+* Prepare unknown variance update
+    * Remove `prior.prec` and `post.prec` slots for simplicity
+    * Add slots to store degrees-of-freedom (set to Inf when heuristic = TRUE)
+    * Replace Normal distribution with t distribution
+* Update `run.benchmark` method
+    * New `fast` argument to measure p-value at final time step only
+
 ## rarsim 0.0.6
 ---------------------
 * Add `sampler` methods
     * New `sampler.fixed` will allocate patients at a fixed ratio
     * New `sampler.auc` will allocate patients proportional to p(posterior > cutoff)
-* Improvements
+* Prepare unknown variance update
     * Add `prior.alpha` and `prior.beta` slots to anticipate normal-gamma conjugate
-    * (`prior.var` and `prior.prec` save expected values for backwards compatibility)
+    * (`prior.var` and `prior.prec` save marginal values for backwards compatibility)
     * Add `post.alpha` and `post.beta` slots to anticipate normal-gamma conjugate
-    * (`post.var` and `post.prec` save expected values for backwards compatibility)
+    * (`post.var` and `post.prec` save marginal values for backwards compatibility)
     * Add `heuristic` argument to toggle normal-gamma use
 
 ## rarsim 0.0.5

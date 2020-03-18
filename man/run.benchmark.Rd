@@ -11,6 +11,7 @@ run.benchmark(
   N.allocate = scheduler@N.burn.in,
   alpha = 0.05,
   repititions = 1000,
+  fast = FALSE,
   how.stats = stats.empiric,
   ...
 )
@@ -28,6 +29,8 @@ By default, \code{N.allocate} is set equal to \code{N.burn.in}.}
 \item{alpha}{The Type I error to control.}
 
 \item{repititions}{An integer. The number of times to repeat the trial.}
+
+\item{fast}{If TRUE, measure p-value at final time step only.}
 
 \item{how.stats}{A function. The statistical method used to compute a p-value.}
 
