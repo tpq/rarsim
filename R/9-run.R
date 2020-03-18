@@ -22,12 +22,13 @@ run.trial <- function(scheduler, simulator, N.trials = 10, N.allocate = schedule
 #' @inheritParams run.trial
 #' @param alpha The Type I error to control.
 #' @param repititions An integer. The number of times to repeat the trial.
+#' @param fast If TRUE, measure p-value at final time step only.
 #' @param how.stats A function. The statistical method used to compute a p-value.
 #' @param ... Named arguments passed to \code{how.stats} method.
 #' @return A \code{data.frame} of false positive rates.
 #' @export
 run.benchmark <- function(scheduler, simulator, N.trials = 10, N.allocate = scheduler@N.burn.in,
-                          alpha = 0.05, repititions = 1000, how.stats = stats.empiric, ...){
+                          alpha = 0.05, repititions = 1000, fast = FALSE, how.stats = stats.empiric, ...){
 
   if(!identical(class(how.stats), "function")){
     stop("Provide 'how.stats' argument as a function.")
@@ -51,8 +52,12 @@ run.benchmark <- function(scheduler, simulator, N.trials = 10, N.allocate = sche
       sch.r <- scheduler.update(sch.r, getDraw(sim.r), N.allocate = N.allocate)
 
       # Save p-value
-      pval <- do.call(how.stats, list(sch.r, ...))
-      catch_pval_at_step[[trial]] <- data.frame("step" = trial, "arm" = t(pval))
+      if(!fast | trial == N.trials){
+        pval <- do.call(how.stats, list(sch.r, ...))
+        catch_pval_at_step[[trial]] <- data.frame("step" = trial, "arm" = t(pval))
+      }else{
+        catch_pval_at_step[[trial]] <- data.frame("step" = trial, "arm" = t(rep(NA, sch.r@K.arms-1)))
+      }
     }
 
     # Save results as data.frame
