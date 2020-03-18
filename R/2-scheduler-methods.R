@@ -21,16 +21,20 @@ scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = sampler.
 
   if(heuristic){
 
-    sch@heuristic <- TRUE
+    sch@prior.df <- rep(Inf, length(prior.mean))
     sch@prior.mean <- prior.mean
     sch@prior.var <- prior.var
-    sch@prior.prec <- 1/prior.var
+
+    sch@heuristic <- TRUE
+    sch@post.df <- rep(Inf, length(prior.mean))
 
   }else{
 
     # TO UPDATE IN FUTURE VERSION
     stop("Normal-gamma conjugate prior not yet implemented.")
-    # Note: @prior.var and @prior.prec to become the expected based on alpha, beta
+    # Note: update @post.var and @df based on alpha, beta
+    message("Alert: The @prior.var slot will contain the variance of the marginal\n",
+            " distribution of the mean, not the expected variance of the data!")
   }
 
   sch@N.burn.in <- N.burn.in
@@ -44,7 +48,7 @@ scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = sampler.
   sch@allocation <- sample(factor(allocation, 1:sch@K.arms)) # make sure first allocation is random
   sch@ingest <- split(rep(NA, length(sch@allocation)), sch@allocation) # dummy structure for first data ingest
   sch@history.post <- data.frame(step = sch@step, arm = 1:sch@K.arms,
-                                 mean = sch@prior.mean, var = sch@prior.var, prec = sch@prior.prec,
+                                 mean = sch@prior.mean, var = sch@prior.var, df = sch@prior.df,
                                  total = 0, next_ratio = 1/sch@K.arms) # initialize history table with priors
   sch@history <- list() # but history list is empty
   return(sch)
@@ -94,25 +98,28 @@ scheduler.update <- function(scheduler, data.ingest, N.allocate){
   if(sch@heuristic){
 
     # Update all posteriors using empiric data
+    prior.prec <- 1/sch@prior.var
     sch@post.mean <- sapply(
       1:sch@K.arms,
       function(arm){
         # (prec0 * mu0 + prec*sum(x)) / (prec0 + n*prec)
-        (sch@prior.prec[arm]*sch@prior.mean[arm] + sch@online.prec[arm]*sch@online.sum[arm])/
-          (sch@prior.prec[arm] + sch@online.count[arm]*sch@online.prec[arm])
+        (prior.prec[arm]*sch@prior.mean[arm] + sch@online.prec[arm]*sch@online.sum[arm])/
+          (prior.prec[arm] + sch@online.count[arm]*sch@online.prec[arm])
       })
-    sch@post.prec <- sapply(
+    post.prec <- sapply(
       1:sch@K.arms,
       function(arm){
-        sch@prior.prec[arm] + sch@online.count[arm]*sch@online.prec[arm]
+        prior.prec[arm] + sch@online.count[arm]*sch@online.prec[arm]
       })
-    sch@post.var <- sapply(sch@post.prec, function(prec) 1/prec)
+    sch@post.var <- sapply(post.prec, function(prec) 1/prec)
 
   }else{
 
     # TO UPDATE IN FUTURE VERSION
     stop("Normal-gamma conjugate prior not yet implemented.")
-    # Note: @post.var and @post.prec to become the expected based on alpha, beta
+    # Note: update @post.var and @df based on alpha, beta
+    message("Alert: The @post.var slot will contain the variance of the marginal\n",
+            " distribution of the mean, not the expected variance of the data!")
   }
 
   # Call the sampler (e.g., sampler.thompson) one patient at a time...
@@ -128,7 +135,7 @@ scheduler.update <- function(scheduler, data.ingest, N.allocate){
   sch@history.post <- rbind(
     sch@history.post,
     data.frame(step = sch@step, arm = 1:sch@K.arms,
-               mean = sch@post.mean, var = sch@post.var, prec = sch@post.prec,
+               mean = sch@post.mean, var = sch@post.var, df = sch@post.df,
                total = sch@online.count, next_ratio = as.numeric(table(sch@allocation) / sum(table(sch@allocation)))
     )
   )
