@@ -12,7 +12,7 @@ sampler.thompson <- function(scheduler){
   sample_each_arm <- sapply(
     1:sch@K.arms,
     function(arm){
-      rnorm(1, mean = sch@post.mean[arm], sd = sqrt(sch@post.var[arm]))
+      alt_rt(1, df = sch@post.df[arm], mean = sch@post.mean[arm], sd = sqrt(sch@post.var[arm]))
     })
 
   # Choose allocation group based on the max reward sampled
