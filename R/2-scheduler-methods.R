@@ -10,9 +10,9 @@ scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = sampler.
     stop("Provide a reasonable size for each arm of the 'burn-in' phase.")
   }
 
-  if(!identical(class(sampler), "function")){
-    stop("Provide 'sampler' argument as a function.")
-  }
+  # if(!identical(class(sampler), "function")){
+  #   stop("Provide 'sampler' argument as a function.")
+  # }
 
   sch <- new("scheduler")
 

@@ -30,9 +30,9 @@ run.trial <- function(scheduler, simulator, N.trials = 10, N.allocate = schedule
 run.benchmark <- function(scheduler, simulator, N.trials = 10, N.allocate = scheduler@N.burn.in,
                           alpha = 0.05, repititions = 1000, fast = FALSE, how.stats = stats.empiric, ...){
 
-  if(!identical(class(how.stats), "function")){
-    stop("Provide 'how.stats' argument as a function.")
-  }
+  # if(!identical(class(how.stats), "function")){
+  #   stop("Provide 'how.stats' argument as a function.")
+  # }
 
   # Run an N.trials trial a bunch of times
   pvals <- vector("list", repititions)
