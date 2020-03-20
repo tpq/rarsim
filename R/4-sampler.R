@@ -37,7 +37,7 @@ sampler.fixed <- function(scheduler){
 #'
 #' This function estimates the probability that the posterior expected reward
 #'  is greater than a cutoff. It does this by computing the area under the curve
-#'  for a z-score at a given cutoff.
+#'  for a t-score at a given cutoff.
 #'
 #' @param scheduler A \code{scheduler} object.
 #' @param cutoff A numeric. The value against which to compare the posterior.
@@ -45,24 +45,34 @@ sampler.fixed <- function(scheduler){
 #' @export
 p_greater_than_cutoff <- function(scheduler, cutoff){
 
-  ms <- scheduler@post.mean
-  ss <- sqrt(scheduler@post.var)
-  z <- (ms - cutoff)/ss
-  p <- pnorm(z)
-  return(p)
+  1 - alt_pt(cutoff, df = scheduler@post.df,
+             mean = scheduler@post.mean, sd = sqrt(scheduler@post.var))
 }
 
 #' @rdname scheduler
 #' @section Samplers:
-#' \code{sampler.auc:} Method to allocate patients proportional to the
-#'  probability that the posterior expected reward is greater than 0.
+#' \code{sampler.auc.cutoff:} Method to allocate patients proportional to the
+#'  probability that the posterior expected reward is greater than a cutoff.
 #'  This function returns an integer corresponding to the group
 #'  to which the patient is randomly allocated.
 #' @export
-sampler.auc <- function(scheduler){
+sampler.auc.cutoff <- function(scheduler, cutoff = 0){
 
-  # Weigh probability based on p(posterior > 0)
-  aucs <- p_greater_than_cutoff(scheduler, cutoff = 0)
+  # Weigh probability based on p(posterior > c)
+  aucs <- p_greater_than_cutoff(scheduler, cutoff = cutoff)
   prob <- aucs/sum(aucs)
   sample(1:scheduler@K.arms, prob = prob)[1]
+}
+
+#' @rdname scheduler
+#' @section Samplers:
+#' \code{sampler.auc.reference:} Method to allocate patients proportional to the
+#'  probability that the posterior expected reward is greater than a reference.
+#'  This function returns an integer corresponding to the group
+#'  to which the patient is randomly allocated.
+#' @export
+sampler.auc.reference <- function(scheduler, reference = NULL){
+
+  if(is.null(reference)) stop("Reference is missing.")
+  sampler.auc.cutoff(scheduler, cutoff = scheduler@post.mean[reference])
 }
