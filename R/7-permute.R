@@ -98,6 +98,7 @@ getPermutations <- function(scheduler, how = permute.from.all, reference = NULL)
                             prior.var = scheduler@prior.var,
                             N.burn.in = scheduler@N.burn.in,
                             sampler = scheduler@sampler)
+  newsch@sampler.args <- scheduler@sampler.args # pass sampler.args before update...
 
   # Permute rewards and pass to new scheduler object
   p_rewards <- do.call(how, list(rewards = scheduler@rewards, reference = reference))
