@@ -99,7 +99,7 @@ setClass("scheduler",
 
              sampler.id = "character",
              sampler.args = "list",
-             sampler = "function",
+             sampler = "ANY",
              allocation = "numeric",
              ingest = "list",
 
