@@ -48,13 +48,13 @@ plotHistory(scheduler)
 
 plotAllocation(scheduler)
 
-sampler.thompson(scheduler)
+sampler.thompson(scheduler, ...)
 
-sampler.fixed(scheduler)
+sampler.fixed(scheduler, ...)
 
-sampler.auc.cutoff(scheduler, cutoff = 0)
+sampler.auc.cutoff(scheduler, cutoff = 0, ...)
 
-sampler.auc.reference(scheduler, reference = NULL)
+sampler.auc.reference(scheduler, reference = NULL, ...)
 }
 \arguments{
 \item{object, scheduler}{A \code{scheduler} object.}
@@ -76,7 +76,8 @@ the conjugate prior distribution is normal.}
 These apply when the conjugate prior distribution is normal-gamma
 (i.e., when \code{heuristic = TRUE}).}
 
-\item{...}{Arguments passed to \code{sampler} function.}
+\item{...}{Arguments passed to \code{sampler} function.
+For the \code{sampler} itself, a null argument.}
 
 \item{data.ingest}{A list of rewards. Must match the structure of \code{scheduler@ingest}.}
 

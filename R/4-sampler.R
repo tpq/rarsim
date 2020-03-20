@@ -4,7 +4,7 @@
 #'  This function returns an integer corresponding to the group
 #'  to which the patient is randomly allocated.
 #' @export
-sampler.thompson <- function(scheduler){
+sampler.thompson <- function(scheduler, ...){
 
   sch <- scheduler
 
@@ -27,7 +27,7 @@ sampler.thompson <- function(scheduler){
 #'  This function returns an integer corresponding to the group
 #'  to which the patient is randomly allocated.
 #' @export
-sampler.fixed <- function(scheduler){
+sampler.fixed <- function(scheduler, ...){
 
   # Each arm has equal probability
   sample(1:scheduler@K.arms)[1]
@@ -56,7 +56,7 @@ p_greater_than_cutoff <- function(scheduler, cutoff){
 #'  This function returns an integer corresponding to the group
 #'  to which the patient is randomly allocated.
 #' @export
-sampler.auc.cutoff <- function(scheduler, cutoff = 0){
+sampler.auc.cutoff <- function(scheduler, cutoff = 0, ...){
 
   # Weigh probability based on p(posterior > c)
   aucs <- p_greater_than_cutoff(scheduler, cutoff = cutoff)
@@ -71,7 +71,7 @@ sampler.auc.cutoff <- function(scheduler, cutoff = 0){
 #'  This function returns an integer corresponding to the group
 #'  to which the patient is randomly allocated.
 #' @export
-sampler.auc.reference <- function(scheduler, reference = NULL){
+sampler.auc.reference <- function(scheduler, reference = NULL, ...){
 
   if(is.null(reference)) stop("Reference is missing.")
   sampler.auc.cutoff(scheduler, cutoff = scheduler@post.mean[reference])

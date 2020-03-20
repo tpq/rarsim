@@ -60,6 +60,7 @@
 #' @param cutoff The cutoff used for \code{sampler.auc.cutoff}.
 #' @param reference The reference used for \code{sampler.auc.reference}.
 #' @param ... Arguments passed to \code{sampler} function.
+#'  For the \code{sampler} itself, a null argument.
 #'
 #' @name scheduler
 NULL

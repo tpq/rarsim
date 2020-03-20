@@ -1,3 +1,8 @@
+## rarsim 0.0.9
+---------------------
+* Pass arguments to `sampler` function
+    * Add null `...` arguments to all `sampler` functions
+
 ## rarsim 0.0.8
 ---------------------
 * Launch unknown variance update
