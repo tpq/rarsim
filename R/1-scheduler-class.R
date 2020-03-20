@@ -6,8 +6,8 @@
 #' @slot prior.var The uncertainty about the mean. When the
 #'  conjugate prior distribution is normal-gamma, this slot contains the
 #'  variance of the marginal distribution of the mean.
-#' @slot prior.alpha,prior.beta The prior statistics for each arm. These apply
-#'  when the conjugate prior distribution is normal-gamma.
+#' @slot prior.nu,prior.alpha,prior.beta The prior statistics for each arm.
+#'  These apply when the conjugate prior distribution is normal-gamma.
 #' @slot N.burn.in An integer. The number of patients in each arm at first time step.
 #' @slot K.arms An integer. The number of experimental groups (also called 'arms').
 #' @slot step An integer. The number of time steps so far. Each time step is a
@@ -26,9 +26,10 @@
 #' @slot post.var The uncertainty about the mean. When the
 #'  conjugate prior distribution is normal-gamma, this slot contains the
 #'  variance of the marginal distribution of the mean.
-#' @slot post.alpha,post.beta The posterior statistics for each arm. These apply
-#'  when the conjugate prior distribution is normal-gamma.
+#' @slot post.nu,post.alpha,post.beta The posterior statistics for each arm.
+#'  These apply when the conjugate prior distribution is normal-gamma.
 #' @slot sampler.id A string. The sampling method used to allocate patients.
+#' @slot sampler.args A list. Arguments for the sampling method.
 #' @slot sampler A function. The sampling method used to allocate patients.
 #' @slot allocation A vector of groups to which to allocate new patients.
 #' @slot ingest A list describing the structure of the data expected
@@ -43,16 +44,22 @@
 #'  the rewards here are organized by time step.
 #'
 #' @param object,scheduler A \code{scheduler} object.
+#' @param prior.mean A vector of prior means. One mean for each arm
+#' @param prior.var A vector of prior variances. One variance for each arm.
 #' @param heuristic A logical. Toggles whether to assume precision is known,
 #'  but instead estimate it from the data. When taking this approach,
 #'  the conjugate prior distribution is normal.
-#' @param prior.mean A vector of prior means. One mean for each arm
-#' @param prior.var A vector of prior variances. One variance for each arm.
+#' @param prior.nu,prior.alpha,prior.beta The prior statistics for each arm.
+#'  These apply when the conjugate prior distribution is normal-gamma
+#'  (i.e., when \code{heuristic = TRUE}).
 #' @param N.burn.in An integer. The number patients to allocate each arm
 #'  during the initial 'burn-in' phase. Ideally, around 20-30 per arm.
 #' @param sampler A function. The sampling method used to allocate patients.
 #' @param data.ingest A list of rewards. Must match the structure of \code{scheduler@@ingest}.
 #' @param N.allocate An integer. The total number of patients to allocate next.
+#' @param cutoff The cutoff used for \code{sampler.auc.cutoff}.
+#' @param reference The reference used for \code{sampler.auc.reference}.
+#' @param ... Arguments passed to \code{sampler} function.
 #'
 #' @name scheduler
 NULL
@@ -65,6 +72,7 @@ setClass("scheduler",
              prior.df = "numeric",
              prior.mean = "numeric",
              prior.var = "numeric",
+             prior.nu = "numeric",
              prior.alpha = "numeric",
              prior.beta = "numeric",
 
@@ -84,10 +92,12 @@ setClass("scheduler",
              post.df = "numeric",
              post.mean = "numeric",
              post.var = "numeric",
+             post.nu = "numeric",
              post.alpha = "numeric",
              post.beta = "numeric",
 
              sampler.id = "character",
+             sampler.args = "list",
              sampler = "function",
              allocation = "numeric",
              ingest = "list",
