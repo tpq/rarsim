@@ -111,6 +111,8 @@ simulator.start.from.unif <- function(mins, maxes, N = 1000){
     stop("Provide an equal-length vector of minimums and maximums.")
   }
 
+  if(any(mins > maxes)) stop("Make sure the maximums are greater than the minimums!")
+
   pool <- vector("list", length(mins))
   for(grp in 1:length(pool)){
     pool[[grp]] <- runif(N, min = mins[grp], max = maxes[grp])
