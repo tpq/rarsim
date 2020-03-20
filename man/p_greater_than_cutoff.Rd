@@ -17,5 +17,5 @@ A vector of probabilities.
 \description{
 This function estimates the probability that the posterior expected reward
  is greater than a cutoff. It does this by computing the area under the curve
- for a z-score at a given cutoff.
+ for a t-score at a given cutoff.
 }

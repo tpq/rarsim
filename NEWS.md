@@ -1,3 +1,16 @@
+## rarsim 0.0.8
+---------------------
+* Launch unknown variance update
+    * Add `prior.nu` and `post.nu` slots
+    * Add prior nu, alpha, and beta arguments to `scheduler.start` function
+    * Add procedure to guess prior nu, alpha, and beta from prior var
+    * Make `sampler.auc` use t-distribution too
+* Pass arguments to `sampler` function
+    * Add `sampler.auc.cutoff` to allocate patients based on p(sample > cutoff)
+    * Add `sampler.auc.reference` to allocate patients based on p(sample > reference)
+    * The `scheduler.start` will save `...` args to `sampler.args` slot
+    * These get passed to the `sampler` during an update
+
 ## rarsim 0.0.7
 ---------------------
 * Prepare unknown variance update

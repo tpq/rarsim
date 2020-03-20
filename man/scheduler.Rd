@@ -16,7 +16,8 @@
 \alias{plotAllocation}
 \alias{sampler.thompson}
 \alias{sampler.fixed}
-\alias{sampler.auc}
+\alias{sampler.auc.cutoff}
+\alias{sampler.auc.reference}
 \title{S4 Scheduler Class Object}
 \usage{
 \S4method{show}{scheduler}(object)
@@ -30,7 +31,11 @@ scheduler.start(
   prior.var,
   N.burn.in,
   sampler = sampler.thompson,
-  heuristic = TRUE
+  heuristic = TRUE,
+  prior.nu,
+  prior.alpha,
+  prior.beta,
+  ...
 )
 
 scheduler.update(scheduler, data.ingest, N.allocate)
@@ -47,7 +52,9 @@ sampler.thompson(scheduler)
 
 sampler.fixed(scheduler)
 
-sampler.auc(scheduler)
+sampler.auc.cutoff(scheduler, cutoff = 0)
+
+sampler.auc.reference(scheduler, reference = NULL)
 }
 \arguments{
 \item{object, scheduler}{A \code{scheduler} object.}
@@ -65,9 +72,19 @@ during the initial 'burn-in' phase. Ideally, around 20-30 per arm.}
 but instead estimate it from the data. When taking this approach,
 the conjugate prior distribution is normal.}
 
+\item{prior.nu, prior.alpha, prior.beta}{The prior statistics for each arm.
+These apply when the conjugate prior distribution is normal-gamma
+(i.e., when \code{heuristic = TRUE}).}
+
+\item{...}{Arguments passed to \code{sampler} function.}
+
 \item{data.ingest}{A list of rewards. Must match the structure of \code{scheduler@ingest}.}
 
 \item{N.allocate}{An integer. The total number of patients to allocate next.}
+
+\item{cutoff}{The cutoff used for \code{sampler.auc.cutoff}.}
+
+\item{reference}{The reference used for \code{sampler.auc.reference}.}
 }
 \description{
 S4 Scheduler Class Object
@@ -84,8 +101,8 @@ uncertainty about the mean. Set to Inf when \code{heuristic = TRUE}.}
 conjugate prior distribution is normal-gamma, this slot contains the
 variance of the marginal distribution of the mean.}
 
-\item{\code{prior.alpha,prior.beta}}{The prior statistics for each arm. These apply
-when the conjugate prior distribution is normal-gamma.}
+\item{\code{prior.nu,prior.alpha,prior.beta}}{The prior statistics for each arm.
+These apply when the conjugate prior distribution is normal-gamma.}
 
 \item{\code{N.burn.in}}{An integer. The number of patients in each arm at first time step.}
 
@@ -114,10 +131,12 @@ uncertainty about the mean. Set to Inf when \code{heuristic = TRUE}.}
 conjugate prior distribution is normal-gamma, this slot contains the
 variance of the marginal distribution of the mean.}
 
-\item{\code{post.alpha,post.beta}}{The posterior statistics for each arm. These apply
-when the conjugate prior distribution is normal-gamma.}
+\item{\code{post.nu,post.alpha,post.beta}}{The posterior statistics for each arm.
+These apply when the conjugate prior distribution is normal-gamma.}
 
 \item{\code{sampler.id}}{A string. The sampling method used to allocate patients.}
+
+\item{\code{sampler.args}}{A list. Arguments for the sampling method.}
 
 \item{\code{sampler}}{A function. The sampling method used to allocate patients.}
 
@@ -190,8 +209,14 @@ the rewards here are organized by time step.}
  to which the patient is randomly allocated.
 
 
-\code{sampler.auc:} Method to allocate patients proportional to the
- probability that the posterior expected reward is greater than 0.
+\code{sampler.auc.cutoff:} Method to allocate patients proportional to the
+ probability that the posterior expected reward is greater than a cutoff.
+ This function returns an integer corresponding to the group
+ to which the patient is randomly allocated.
+
+
+\code{sampler.auc.reference:} Method to allocate patients proportional to the
+ probability that the posterior expected reward is greater than a reference.
  This function returns an integer corresponding to the group
  to which the patient is randomly allocated.
 }
