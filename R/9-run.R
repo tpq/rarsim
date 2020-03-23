@@ -23,16 +23,16 @@ run.trial <- function(scheduler, simulator, N.trials = 10, N.allocate = schedule
 #' @param alpha The Type I error to control.
 #' @param repititions An integer. The number of times to repeat the trial.
 #' @param fast If TRUE, measure p-value at final time step only.
-#' @param how.stats A function. The statistical method used to compute a p-value.
+#' @param how.stats A string. The statistical method used to compute a p-value.
 #' @param ... Named arguments passed to \code{how.stats} method.
 #' @return A \code{data.frame} of false positive rates.
 #' @export
 run.benchmark <- function(scheduler, simulator, N.trials = 10, N.allocate = scheduler@N.burn.in,
-                          alpha = 0.05, repititions = 1000, fast = FALSE, how.stats = stats.empiric, ...){
+                          alpha = 0.05, repititions = 1000, fast = FALSE, how.stats = "stats.empiric", ...){
 
-  # if(!identical(class(how.stats), "function")){
-  #   stop("Provide 'how.stats' argument as a function.")
-  # }
+  if(!identical(class(how.stats), "character")){
+    stop("Provide 'how.stats' argument as a character.")
+  }
 
   # Run an N.trials trial a bunch of times
   pvals <- vector("list", repititions)
@@ -71,13 +71,13 @@ run.benchmark <- function(scheduler, simulator, N.trials = 10, N.allocate = sche
 
   # Return a data.frame with one row
   data.frame(
-    "sampler" = scheduler@sampler.id,
+    "sampler" = scheduler@sampler,
     "K.arms" = scheduler@K.arms,
     "N.burn.in" = scheduler@N.burn.in,
     "N.allocate" = N.allocate,
     "N.trials" = N.trials,
     "repititions" = repititions,
-    "how.stats" = as.character(substitute(how.stats)),
+    "how.stats" = how.stats,
     df
   )
 }
