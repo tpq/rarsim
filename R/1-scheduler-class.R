@@ -28,9 +28,9 @@
 #'  variance of the marginal distribution of the mean.
 #' @slot post.nu,post.alpha,post.beta The posterior statistics for each arm.
 #'  These apply when the conjugate prior distribution is normal-gamma.
-#' @slot sampler.id A string. The sampling method used to allocate patients.
 #' @slot sampler.args A list. Arguments for the sampling method.
-#' @slot sampler A function. The sampling method used to allocate patients.
+#' @slot sampler A string. The sampling method used to allocate patients.
+#' @slot dynamic.count Like \code{@@online.count}, but used by the UCB algorithm.
 #' @slot allocation A vector of groups to which to allocate new patients.
 #' @slot ingest A list describing the structure of the data expected
 #'  by the next \code{scheduler.update} call. This slot is only
@@ -54,11 +54,20 @@
 #'  (i.e., when \code{heuristic = TRUE}).
 #' @param N.burn.in An integer. The number patients to allocate each arm
 #'  during the initial 'burn-in' phase. Ideally, around 20-30 per arm.
-#' @param sampler A function. The sampling method used to allocate patients.
+#' @param sampler A string. The sampling method used to allocate patients.
 #' @param data.ingest A list of rewards. Must match the structure of \code{scheduler@@ingest}.
 #' @param N.allocate An integer. The total number of patients to allocate next.
 #' @param cutoff The cutoff used for \code{sampler.auc.cutoff}.
+#'  Allocation is proportional to area under the posterior greater than this cutoff.
 #' @param reference The reference used for \code{sampler.auc.reference}.
+#'  Allocation is proportional to area under the posterior greater than
+#'  the posterior mean of this reference.
+#' @param epsilon The epsilon used for \code{sampler.epsilon.greedy}.
+#'  Allocation is to a random group \code{epsilon} percent of the time;
+#'  otherwise, it is to the group with the largest posterior mean.
+#' @param c The exploration hyper-parameter used by several UCB algorithms.
+#' @param batch Toggles whether the UCB algorithm should allocate patients
+#'  to groups randomly based on the rank of the UCB score.
 #' @param ... Arguments passed to \code{sampler} function.
 #'  For the \code{sampler} itself, a null argument.
 #'
@@ -97,9 +106,9 @@ setClass("scheduler",
              post.alpha = "numeric",
              post.beta = "numeric",
 
-             sampler.id = "character",
              sampler.args = "list",
-             sampler = "ANY",
+             sampler = "character",
+             dynamic.count = "numeric",
              allocation = "numeric",
              ingest = "list",
 
