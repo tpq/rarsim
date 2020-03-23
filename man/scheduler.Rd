@@ -18,6 +18,9 @@
 \alias{sampler.fixed}
 \alias{sampler.auc.cutoff}
 \alias{sampler.auc.reference}
+\alias{sampler.ucb1}
+\alias{sampler.ucb1.normal}
+\alias{sampler.epsilon.greedy}
 \title{S4 Scheduler Class Object}
 \usage{
 \S4method{show}{scheduler}(object)
@@ -30,7 +33,7 @@ scheduler.start(
   prior.mean,
   prior.var,
   N.burn.in,
-  sampler = sampler.thompson,
+  sampler = "sampler.thompson",
   heuristic = TRUE,
   prior.nu,
   prior.alpha,
@@ -55,6 +58,12 @@ sampler.fixed(scheduler, ...)
 sampler.auc.cutoff(scheduler, cutoff = 0, ...)
 
 sampler.auc.reference(scheduler, reference = NULL, ...)
+
+sampler.ucb1(scheduler, c = 2, batch = TRUE)
+
+sampler.ucb1.normal(scheduler, c = 16, batch = TRUE)
+
+sampler.epsilon.greedy(scheduler, epsilon = 0.1)
 }
 \arguments{
 \item{object, scheduler}{A \code{scheduler} object.}
@@ -66,7 +75,7 @@ sampler.auc.reference(scheduler, reference = NULL, ...)
 \item{N.burn.in}{An integer. The number patients to allocate each arm
 during the initial 'burn-in' phase. Ideally, around 20-30 per arm.}
 
-\item{sampler}{A function. The sampling method used to allocate patients.}
+\item{sampler}{A string. The sampling method used to allocate patients.}
 
 \item{heuristic}{A logical. Toggles whether to assume precision is known,
 but instead estimate it from the data. When taking this approach,
@@ -83,9 +92,21 @@ For the \code{sampler} itself, a null argument.}
 
 \item{N.allocate}{An integer. The total number of patients to allocate next.}
 
-\item{cutoff}{The cutoff used for \code{sampler.auc.cutoff}.}
+\item{cutoff}{The cutoff used for \code{sampler.auc.cutoff}.
+Allocation is proportional to area under the posterior greater than this cutoff.}
 
-\item{reference}{The reference used for \code{sampler.auc.reference}.}
+\item{reference}{The reference used for \code{sampler.auc.reference}.
+Allocation is proportional to area under the posterior greater than
+the posterior mean of this reference.}
+
+\item{c}{The exploration hyper-parameter used by several UCB algorithms.}
+
+\item{batch}{Toggles whether the UCB algorithm should allocate patients
+to groups randomly based on the rank of the UCB score.}
+
+\item{epsilon}{The epsilon used for \code{sampler.epsilon.greedy}.
+Allocation is to a random group \code{epsilon} percent of the time;
+otherwise, it is to the group with the largest posterior mean.}
 }
 \description{
 S4 Scheduler Class Object
@@ -135,11 +156,11 @@ variance of the marginal distribution of the mean.}
 \item{\code{post.nu,post.alpha,post.beta}}{The posterior statistics for each arm.
 These apply when the conjugate prior distribution is normal-gamma.}
 
-\item{\code{sampler.id}}{A string. The sampling method used to allocate patients.}
-
 \item{\code{sampler.args}}{A list. Arguments for the sampling method.}
 
-\item{\code{sampler}}{A function. The sampling method used to allocate patients.}
+\item{\code{sampler}}{A string. The sampling method used to allocate patients.}
+
+\item{\code{dynamic.count}}{Like \code{@online.count}, but used by the UCB algorithm.}
 
 \item{\code{allocation}}{A vector of groups to which to allocate new patients.}
 
@@ -218,6 +239,24 @@ the rewards here are organized by time step.}
 
 \code{sampler.auc.reference:} Method to allocate patients proportional to the
  probability that the posterior expected reward is greater than a reference.
+ This function returns an integer corresponding to the group
+ to which the patient is randomly allocated.
+
+
+\code{sampler.ucb1:} Method to allocate patients based on a UCB algorithm,
+ assuming that the rewards fall within the range of 0 and 1.
+ This function returns an integer corresponding to the group
+ to which the patient is randomly allocated.
+
+
+\code{sampler.ucb1.normal:} Method to allocate patients based on a UCB algorithm,
+ assuming that the rewards are normally distributed.
+ This function returns an integer corresponding to the group
+ to which the patient is randomly allocated.
+
+
+\code{sampler.epsilon.greedy:} Method to allocate patients based on
+ an epsilon-greedy algorithm. By default, \code{epsilon = 0.1}.
  This function returns an integer corresponding to the group
  to which the patient is randomly allocated.
 }

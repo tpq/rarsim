@@ -1,3 +1,17 @@
+## rarsim 0.1.1
+---------------------
+* New `sampler` methods
+    * Add `dynamic.count` slot for UCB algorithm to batch allocate patients
+    * New `sampler.ucb1` uses a batch-based upper confidence bound (UCB) algorithm
+    * New `sampler.ucb1.normal` uses a batch-based upper confidence bound (UCB) algorithm
+    * New `sampler.epsilon.greedy` uses an epsilon-greedy algorithm
+
+## rarsim 0.1.0
+---------------------
+* Change argument class
+    * Have `scheduler.start` expect a character for `sampler`
+    * Have `run.benchmark` expect a character for `how.stats`
+
 ## rarsim 0.0.9
 ---------------------
 * Pass arguments to `sampler` function
