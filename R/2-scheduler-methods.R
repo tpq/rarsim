@@ -3,16 +3,16 @@
 #' \code{scheduler.start:} Method to initiate a \code{scheduler} object.
 #'  This function returns an updated \code{scheduler} object.
 #' @export
-scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = sampler.thompson, heuristic = TRUE,
+scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = "sampler.thompson", heuristic = TRUE,
                             prior.nu, prior.alpha, prior.beta, ...){
 
   if(N.burn.in <= 0){
     stop("Provide a reasonable size for each arm of the 'burn-in' phase.")
   }
 
-  # if(!identical(class(sampler), "function")){
-  #   stop("Provide 'sampler' argument as a function.")
-  # }
+  if(!identical(class(sampler), "character")){
+    stop("Provide 'sampler' argument as a character.")
+  }
 
   sch <- new("scheduler")
 
@@ -80,7 +80,6 @@ scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = sampler.
   sch@step <- 0
   sch@rewards <- lapply(1:length(prior.mean), function(x) NULL) # rewards are NULL to start
   sch@meta <- list() # for future use...
-  sch@sampler.id <- as.character(substitute(sampler)) # get function name...
   sch@sampler.args <- as.list(substitute(list(...)))[-1]
   sch@sampler <- sampler # the sampler is saved on initialization
   allocation <- rep(1:sch@K.arms, N.burn.in) # burn-in will have an equal allocation ratio
@@ -165,10 +164,15 @@ scheduler.update <- function(scheduler, data.ingest, N.allocate){
   }
 
   # Call the sampler (e.g., sampler.thompson) one patient at a time...
+  sch@dynamic.count <- sch@online.count # used by UCB algorithm to batch allocate patients
   allocation <- sapply(1:N.allocate, function(patient){
-    do.call(sch@sampler, append(list("scheduler" = sch), sch@sampler.args))
+    pos <- do.call(sch@sampler, append(list("scheduler" = sch), sch@sampler.args))
+    sch@dynamic.count[pos] <<- sch@dynamic.count[pos] + 1 # let UCB know that +1 patient will be sampled
+    return(pos)
   })
-  sch@allocation <- factor(allocation, 1:sch@K.arms) # factor() makes sure that arms with no patients are not forgotten
+
+  # factor() makes sure that arms with no patients are not forgotten
+  sch@allocation <- factor(allocation, 1:sch@K.arms)
 
   # Define new @ingest expectations
   sch@ingest <- split(rep(NA, length(sch@allocation)), sch@allocation) # dummy structure for next data ingest
