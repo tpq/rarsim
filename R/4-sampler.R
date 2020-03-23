@@ -76,3 +76,76 @@ sampler.auc.reference <- function(scheduler, reference = NULL, ...){
   if(is.null(reference)) stop("Reference is missing.")
   sampler.auc.cutoff(scheduler, cutoff = scheduler@post.mean[reference])
 }
+
+#' @rdname scheduler
+#' @section Samplers:
+#' \code{sampler.ucb1:} Method to allocate patients based on a UCB algorithm,
+#'  assuming that the rewards fall within the range of 0 and 1.
+#'  This function returns an integer corresponding to the group
+#'  to which the patient is randomly allocated.
+#' @export
+sampler.ucb1 <- function(scheduler, c = 2, batch = TRUE){
+
+  ucb <- scheduler@online.mean +
+    sqrt( c *
+            (log(sum(scheduler@dynamic.count))) /
+            (scheduler@dynamic.count)
+    )
+
+  if(batch){
+    squash <- function(x) x - min(x)
+    allocation <- sample(1:scheduler@K.arms, size = 1, prob = squash(ucb))
+  }else{
+    allocation <- which.max(ucb)
+  }
+
+  return(allocation)
+}
+
+#' @rdname scheduler
+#' @section Samplers:
+#' \code{sampler.ucb1.normal:} Method to allocate patients based on a UCB algorithm,
+#'  assuming that the rewards are normally distributed.
+#'  This function returns an integer corresponding to the group
+#'  to which the patient is randomly allocated.
+#' @export
+sampler.ucb1.normal <- function(scheduler, c = 16, batch = TRUE){
+
+  SS <- sapply(scheduler@rewards, function(x) sum(x^2))
+
+  ucb <- scheduler@online.mean +
+    sqrt( c *
+            (SS - scheduler@online.count * scheduler@online.mean^2) / # do not make dynamic or else get sqrt(-x)
+            (scheduler@dynamic.count - 1) *
+            (log(sum(scheduler@dynamic.count)-1)) /
+            (scheduler@dynamic.count)
+    )
+
+  if(batch){
+    squash <- function(x) x - min(x)
+    allocation <- sample(1:scheduler@K.arms, size = 1, prob = squash(ucb))
+  }else{
+    allocation <- which.max(ucb)
+  }
+
+  return(allocation)
+}
+
+#' @rdname scheduler
+#' @section Samplers:
+#' \code{sampler.epsilon.greedy:} Method to allocate patients based on
+#'  an epsilon-greedy algorithm. By default, \code{epsilon = 0.1}.
+#'  This function returns an integer corresponding to the group
+#'  to which the patient is randomly allocated.
+#' @export
+sampler.epsilon.greedy <- function(scheduler, epsilon = 0.1){
+
+  cutoff <- runif(1, 0, 1)
+  if(cutoff > epsilon){
+    allocation <- which.max(scheduler@post.mean) # (1-gamma)% of the time, choose best
+  }else{
+    allocation <- sample(1:scheduler@K.arms)[1] # (gamma)% of the time, random
+  }
+
+  return(allocation)
+}
