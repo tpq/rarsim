@@ -1,5 +1,6 @@
 #' @importFrom grDevices terrain.colors
 #' @importFrom methods new show
+#' @importFrom plyr rbind.fill
 #' @import stats
 NULL
 
