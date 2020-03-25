@@ -84,7 +84,7 @@ sampler.auc.reference <- function(scheduler, reference = NULL, ...){
 #'  This function returns an integer corresponding to the group
 #'  to which the patient is randomly allocated.
 #' @export
-sampler.ucb1 <- function(scheduler, c = 2, batch = TRUE){
+sampler.ucb1 <- function(scheduler, c = 2, batch = TRUE, ...){
 
   ucb <- scheduler@online.mean +
     sqrt( c *
@@ -93,8 +93,12 @@ sampler.ucb1 <- function(scheduler, c = 2, batch = TRUE){
     )
 
   if(batch){
-    squash <- function(x) x - min(x)
-    allocation <- sample(1:scheduler@K.arms, size = 1, prob = squash(ucb))
+    if(all(ucb == ucb[1])){
+      allocation <- sample(1:scheduler@K.arms, size = 1)
+    }else{
+      squash <- function(x) x - min(x)
+      allocation <- sample(1:scheduler@K.arms, size = 1, prob = squash(ucb))
+    }
   }else{
     allocation <- which.max(ucb)
   }
@@ -109,10 +113,9 @@ sampler.ucb1 <- function(scheduler, c = 2, batch = TRUE){
 #'  This function returns an integer corresponding to the group
 #'  to which the patient is randomly allocated.
 #' @export
-sampler.ucb1.normal <- function(scheduler, c = 16, batch = TRUE){
+sampler.ucb1.normal <- function(scheduler, c = 16, batch = TRUE, ...){
 
   SS <- sapply(scheduler@rewards, function(x) sum(x^2))
-
   ucb <- scheduler@online.mean +
     sqrt( c *
             (SS - scheduler@online.count * scheduler@online.mean^2) / # do not make dynamic or else get sqrt(-x)
@@ -122,8 +125,12 @@ sampler.ucb1.normal <- function(scheduler, c = 16, batch = TRUE){
     )
 
   if(batch){
-    squash <- function(x) x - min(x)
-    allocation <- sample(1:scheduler@K.arms, size = 1, prob = squash(ucb))
+    if(all(ucb == ucb[1])){
+      allocation <- sample(1:scheduler@K.arms, size = 1)
+    }else{
+      squash <- function(x) x - min(x)
+      allocation <- sample(1:scheduler@K.arms, size = 1, prob = squash(ucb))
+    }
   }else{
     allocation <- which.max(ucb)
   }
@@ -138,7 +145,7 @@ sampler.ucb1.normal <- function(scheduler, c = 16, batch = TRUE){
 #'  This function returns an integer corresponding to the group
 #'  to which the patient is randomly allocated.
 #' @export
-sampler.epsilon.greedy <- function(scheduler, epsilon = 0.1){
+sampler.epsilon.greedy <- function(scheduler, epsilon = 0.1, ...){
 
   cutoff <- runif(1, 0, 1)
   if(cutoff > epsilon){
