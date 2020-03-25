@@ -1,6 +1,6 @@
 Package: rarsim
 Title: Response-Adaptive Randomization Simulation Station
-Version: 0.1.1
+Version: 0.1.2
 URL: http://github.com/tpq/rarsim
 BugReports: http://github.com/tpq/rarsim/issues
 Authors@R: c(
@@ -19,6 +19,7 @@ RoxygenNote: 7.0.2
 Encoding: UTF-8
 Imports:
     methods,
+    plyr,
     stats
 Suggests:
     ggplot2,

@@ -30,6 +30,10 @@ diverge.kl.sym <- function(m1, s1, m2, s2){
 #' @export
 getDivergences <- function(scheduler, how = diverge.kl.sym){
 
+  if(any(scheduler@post.var == Inf)){
+    stop("Cannot compute when posterior variance is infinite.")
+  }
+
   ms <- scheduler@post.mean
   ss <- sqrt(scheduler@post.var)
   res <- matrix(0, length(ms), length(ms))

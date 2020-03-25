@@ -1,3 +1,12 @@
+## rarsim 0.1.2
+---------------------
+* Track allocation entropy
+    * New `getEntropy` calculates entropy of allocation ratios at each time step
+    * Track entropy with `run.benchmark` function
+* Improvements
+    * Add handling for `sampler.ucb1.normal` when all UCB are the same
+    * Set `heuristic = FALSE` by default
+
 ## rarsim 0.1.1
 ---------------------
 * New `sampler` methods

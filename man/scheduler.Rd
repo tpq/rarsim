@@ -8,6 +8,7 @@
 \alias{show,scheduler-method}
 \alias{getAllocation}
 \alias{getHistory}
+\alias{getEntropy}
 \alias{scheduler.start}
 \alias{scheduler.update}
 \alias{plotPrior}
@@ -29,12 +30,14 @@ getAllocation(object)
 
 getHistory(object)
 
+getEntropy(scheduler)
+
 scheduler.start(
   prior.mean,
   prior.var,
   N.burn.in,
   sampler = "sampler.thompson",
-  heuristic = TRUE,
+  heuristic = FALSE,
   prior.nu,
   prior.alpha,
   prior.beta,
@@ -59,11 +62,11 @@ sampler.auc.cutoff(scheduler, cutoff = 0, ...)
 
 sampler.auc.reference(scheduler, reference = NULL, ...)
 
-sampler.ucb1(scheduler, c = 2, batch = TRUE)
+sampler.ucb1(scheduler, c = 2, batch = TRUE, ...)
 
-sampler.ucb1.normal(scheduler, c = 16, batch = TRUE)
+sampler.ucb1.normal(scheduler, c = 16, batch = TRUE, ...)
 
-sampler.epsilon.greedy(scheduler, epsilon = 0.1)
+sampler.epsilon.greedy(scheduler, epsilon = 0.1, ...)
 }
 \arguments{
 \item{object, scheduler}{A \code{scheduler} object.}
@@ -193,6 +196,11 @@ the rewards here are organized by time step.}
 \code{getHistory:} Method to retrieve history from a \code{scheduler} object.
  This function returns a table of all posterior statistics and the allocation
  ratios at each time step in the experiment.
+
+
+\code{getEntropy:} Method to retrieve allocation entropy from a
+ \code{scheduler} object. This function returns the entropy of
+ the allocation ratios at each time step.
 }
 
 \section{Setters}{
