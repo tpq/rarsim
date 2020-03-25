@@ -3,7 +3,7 @@
 #' \code{scheduler.start:} Method to initiate a \code{scheduler} object.
 #'  This function returns an updated \code{scheduler} object.
 #' @export
-scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = "sampler.thompson", heuristic = TRUE,
+scheduler.start <- function(prior.mean, prior.var, N.burn.in, sampler = "sampler.thompson", heuristic = FALSE,
                             prior.nu, prior.alpha, prior.beta, ...){
 
   if(N.burn.in <= 0){
