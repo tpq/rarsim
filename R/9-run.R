@@ -34,8 +34,9 @@ run.benchmark <- function(scheduler, simulator, N.trials = 10, N.allocate = sche
     stop("Provide 'how.stats' argument as a character.")
   }
 
-  # Run an N.trials trial a bunch of times
+  # Run the N.trials trial a bunch of times
   pvals <- vector("list", repititions)
+  entropies <- vector("list", repititions)
   for(r in 1:repititions){
 
     # Make a copy of the scheduler and simulator
@@ -56,18 +57,27 @@ run.benchmark <- function(scheduler, simulator, N.trials = 10, N.allocate = sche
         pval <- do.call(how.stats, list(sch.r, ...))
         catch_pval_at_step[[trial]] <- data.frame("step" = trial, "arm" = t(pval))
       }else{
-        catch_pval_at_step[[trial]] <- data.frame("step" = trial, "arm" = t(rep(NA, sch.r@K.arms-1)))
+        catch_pval_at_step[[trial]] <- data.frame("step" = trial)
       }
     }
 
     # Save results as data.frame
-    pvals[[r]] <- do.call("rbind", catch_pval_at_step)
+    pvals[[r]] <- do.call(plyr::rbind.fill, catch_pval_at_step)
+    entropies[[r]] <- getEntropy(sch.r)
   }
 
-  # Calculate how often (p < alpha) for each trial arm
+  # Calculate how often (p < alpha) for at least one trial arm
   df <- do.call("rbind", pvals)
   df$min_of_all_arms <- apply(df[,-1,drop=FALSE], 1, min)
   df <- aggregate(. ~ step, df, FUN = function(x) sum(x < alpha)/length(x))
+
+  # Calculate average entropy at each time step
+  ent <- do.call("rbind", entropies)
+  ent <- aggregate(entropy ~ step, ent, mean)
+  colnames(ent) <- c("step", "avg_entropy")
+
+  # Merge the p-value and entropy data
+  df <- merge(df, ent, by.x = "step", by.y = "step", all.x = TRUE, all.y = TRUE)
 
   # Return a data.frame with one row
   data.frame(
