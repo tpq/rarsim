@@ -163,3 +163,30 @@ getHistory <- function(object){
 
   return(object@history.post)
 }
+
+#' Compute Shannon Index
+#'
+#' This function will ignore zeros.
+#'
+#' @param p A probability vector.
+#' @return The entropy.
+#' @export
+shannon <- function(p){
+
+  p <- p[p>0]
+  -1 * sum(p*log(p))
+}
+
+#' @rdname scheduler
+#' @section Getters:
+#' \code{getEntropy:} Method to retrieve allocation entropy from a
+#'  \code{scheduler} object. This function returns the entropy of
+#'  the allocation ratios at each time step.
+#' @export
+getEntropy <- function(scheduler){
+
+  history <- scheduler@history.post
+  res <- aggregate(next_ratio ~ step, history, FUN = function(x) shannon(x))
+  colnames(res) <- c("step", "entropy")
+  return(res)
+}
