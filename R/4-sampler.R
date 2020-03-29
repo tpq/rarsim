@@ -30,7 +30,7 @@ sampler.thompson <- function(scheduler, ...){
 sampler.fixed <- function(scheduler, ...){
 
   # Each arm has equal probability
-  sample(1:scheduler@K.arms)[1]
+  sample(1:scheduler@K.arms, size = 1)
 }
 
 #' Calculate Probability of Posterior
@@ -60,8 +60,13 @@ sampler.auc.cutoff <- function(scheduler, cutoff = 0, ...){
 
   # Weigh probability based on p(posterior > c)
   aucs <- p_greater_than_cutoff(scheduler, cutoff = cutoff)
+
   prob <- aucs/sum(aucs)
-  sample(1:scheduler@K.arms, prob = prob)[1]
+  if(all(prob == 0)){
+    allocation <- sample(1:scheduler@K.arms, size = 1)
+  }else{
+    allocation <- sample(1:scheduler@K.arms, size = 1, prob = prob)
+  }
 }
 
 #' @rdname scheduler
@@ -93,11 +98,11 @@ sampler.ucb1 <- function(scheduler, c = 2, batch = TRUE, ...){
     )
 
   if(batch){
-    if(all(ucb == ucb[1])){
+    prob <- ucb - min(ucb)
+    if(all(prob == 0)){
       allocation <- sample(1:scheduler@K.arms, size = 1)
     }else{
-      squash <- function(x) x - min(x)
-      allocation <- sample(1:scheduler@K.arms, size = 1, prob = squash(ucb))
+      allocation <- sample(1:scheduler@K.arms, size = 1, prob = prob)
     }
   }else{
     allocation <- which.max(ucb)
@@ -125,11 +130,11 @@ sampler.ucb1.normal <- function(scheduler, c = 16, batch = TRUE, ...){
     )
 
   if(batch){
-    if(all(ucb == ucb[1])){
+    prob <- ucb - min(ucb)
+    if(all(prob == 0)){
       allocation <- sample(1:scheduler@K.arms, size = 1)
     }else{
-      squash <- function(x) x - min(x)
-      allocation <- sample(1:scheduler@K.arms, size = 1, prob = squash(ucb))
+      allocation <- sample(1:scheduler@K.arms, size = 1, prob = prob)
     }
   }else{
     allocation <- which.max(ucb)
@@ -151,7 +156,7 @@ sampler.epsilon.greedy <- function(scheduler, epsilon = 0.1, ...){
   if(cutoff > epsilon){
     allocation <- which.max(scheduler@post.mean) # (1-gamma)% of the time, choose best
   }else{
-    allocation <- sample(1:scheduler@K.arms)[1] # (gamma)% of the time, random
+    allocation <- sample(1:scheduler@K.arms, size = 1) # (gamma)% of the time, random
   }
 
   return(allocation)

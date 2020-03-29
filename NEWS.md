@@ -1,3 +1,8 @@
+## rarsim 0.1.3
+---------------------
+* Improvements
+    * Add better handling for the zero probability error
+
 ## rarsim 0.1.2
 ---------------------
 * Track allocation entropy
