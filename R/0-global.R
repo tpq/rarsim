@@ -45,6 +45,30 @@ progress <- function(i, k, numTicks){
   return(numTicks)
 }
 
+#' Make Wide Data from Long Data
+#'
+#' @param formula A formula to guide expansion. The y will be the cell.
+#'  The first x will be the row. The last x will be the column.
+#' @param long A data set in long format.
+#'
+#' @return A data set in wide format.
+#'
+#' @export
+long2wide <- function(formula, long){
+
+  fchar <- as.character(formula)
+  if(length(fchar) != 3) stop("Please provide a y and at least two x to the formula.")
+  as.val <- fchar[2] # leftside as value
+  rightside <- unlist(strsplit(fchar[3], split = " \\+ "))
+  N <- length(rightside)
+  if(N < 2) stop("Please provide a y and at least two x to the formula.")
+  as.row <- rightside[1:(N-1)]
+  as.col <- rightside[N]
+
+  stats::reshape(long, v.names = as.val, idvar = as.row,
+                 timevar = as.col, direction = "wide")
+}
+
 #' Alternative Functions
 #'
 #' Used for unit tests.

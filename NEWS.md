@@ -1,3 +1,8 @@
+## rarsim 0.1.4
+---------------------
+* Improvements
+    * Track total samples allocated with `run.benchmark` function
+
 ## rarsim 0.1.3
 ---------------------
 * Improvements

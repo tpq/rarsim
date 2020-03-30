@@ -37,6 +37,7 @@ run.benchmark <- function(scheduler, simulator, N.trials = 10, N.allocate = sche
   # Run the N.trials trial a bunch of times
   pvals <- vector("list", repititions)
   entropies <- vector("list", repititions)
+  histories <- vector("list", repititions)
   for(r in 1:repititions){
 
     # Make a copy of the scheduler and simulator
@@ -64,6 +65,7 @@ run.benchmark <- function(scheduler, simulator, N.trials = 10, N.allocate = sche
     # Save results as data.frame
     pvals[[r]] <- do.call(plyr::rbind.fill, catch_pval_at_step)
     entropies[[r]] <- getEntropy(sch.r)
+    histories[[r]] <- sch.r@history.post
   }
 
   # Calculate how often (p < alpha) for at least one trial arm
@@ -75,9 +77,14 @@ run.benchmark <- function(scheduler, simulator, N.trials = 10, N.allocate = sche
   ent <- do.call("rbind", entropies)
   ent <- aggregate(entropy ~ step, ent, mean)
   colnames(ent) <- c("step", "avg_entropy")
-
-  # Merge the p-value and entropy data
   df <- merge(df, ent, by.x = "step", by.y = "step", all.x = TRUE, all.y = TRUE)
+
+  # Calculate average allocation count per arm
+  hist <- do.call("rbind", histories)
+  hist <- aggregate(total ~ step + arm, hist, mean)
+  hist <- long2wide(total ~ step + arm, hist)
+  colnames(hist) <- c("step", paste0("avg_", colnames(hist)[-1]))
+  df <- merge(df, hist, by.x = "step", by.y = "step", all.x = TRUE, all.y = TRUE)
 
   # Return a data.frame with one row
   data.frame(
